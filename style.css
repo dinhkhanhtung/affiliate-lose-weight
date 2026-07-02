@@ -294,18 +294,18 @@ nav {
 }
 
 .hero-book-img {
-    width: 310px;
+    width: 460px;
     height: auto;
-    border-radius: 6px 16px 16px 6px;
-    filter: drop-shadow(15px 15px 30px rgba(13, 30, 26, 0.15));
-    transform: rotateY(-16deg) rotateX(4deg) rotateZ(1deg);
-    transform-style: preserve-3d;
+    max-width: 140%;
+    margin: -30px -50px;
     transition: var(--transition);
+    transform: rotate(1.5deg);
+    filter: drop-shadow(0 10px 25px rgba(13, 30, 26, 0.05));
 }
 
 .hero-cover-container:hover .hero-book-img {
-    transform: rotateY(-6deg) rotateX(2deg) rotateZ(0deg) scale(1.05);
-    filter: drop-shadow(25px 25px 40px rgba(13, 30, 26, 0.22));
+    transform: scale(1.04) rotate(-0.5deg);
+    filter: drop-shadow(0 15px 35px rgba(13, 30, 26, 0.08));
 }
 
 /* Payment Status Box */
