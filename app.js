@@ -104,7 +104,7 @@ function displayCalculatorResults(bmi, tdee) {
     bmiVal.innerText = bmi;
     tdeeVal.innerText = `${tdee} kcal`;
 
-    // Xác định trạng thái BMI và vị trí kim chỉ (thanh phần trăm 0% - 100%)
+    // Xác định trạng thái BMI và vị trí kim chỉ
     let status = "";
     let color = "";
     let pointerPercent = 50;
@@ -138,13 +138,13 @@ function displayCalculatorResults(bmi, tdee) {
     adviceText.innerText = advice;
 
     // Tự động điền các chỉ số vào form đăng ký mua sách bên dưới nếu có
-    const heightField = document.getElementById("order-height");
-    const weightField = document.getElementById("order-weight");
+    const heightField = document.getElementById("order-height-hidden");
+    const weightField = document.getElementById("order-weight-hidden");
     if (heightField) heightField.value = document.getElementById("height").value;
     if (weightField) weightField.value = document.getElementById("weight").value;
 }
 
-// 3. Quản lý Accordion (Mục lục Ebook)
+// 3. Quản lý Accordion (Mục lục Ebook & FAQ)
 function initAccordion() {
     const headers = document.querySelectorAll(".accordion-header");
     if (headers.length === 0) return;
@@ -152,10 +152,11 @@ function initAccordion() {
     headers.forEach((header) => {
         header.addEventListener("click", () => {
             const item = header.parentElement;
+            const container = item.parentElement; // Accordion container tương ứng
             const isActive = item.classList.contains("active");
 
-            // Đóng tất cả các mục khác
-            document.querySelectorAll(".accordion-item").forEach((el) => {
+            // Chỉ đóng các mục trong cùng một container để tránh gập chéo giữa FAQ và Chương sách
+            container.querySelectorAll(".accordion-item").forEach((el) => {
                 el.classList.remove("active");
             });
 
@@ -166,11 +167,13 @@ function initAccordion() {
         });
     });
 
-    // Mặc định mở sẵn mục đầu tiên (Chương 1) theo quy tắc AI
-    const firstItem = document.querySelector(".accordion-item");
-    if (firstItem) {
-        firstItem.classList.add("active");
-    }
+    // Mặc định mở sẵn mục đầu tiên của mỗi accordion container
+    document.querySelectorAll(".accordion-container").forEach((container) => {
+        const firstItem = container.querySelector(".accordion-item");
+        if (firstItem) {
+            firstItem.classList.add("active");
+        }
+    });
 }
 
 // 4. Form Đăng ký nhận sách & Lưu Supabase
@@ -181,7 +184,7 @@ function initOrderForm() {
     orderForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const name = document.getElementById("order-name").value;
+        const name = document.getElementById("order-fullname").value;
         const email = document.getElementById("order-email").value;
         const phone = document.getElementById("order-phone").value;
         const amount = 299000; // Giá sách cố định VNĐ
@@ -241,15 +244,14 @@ function initOrderForm() {
                 });
             } catch (notifyErr) {
                 console.error("Gửi thông báo Telegram lỗi:", notifyErr);
-                // Vẫn tiếp tục vì đơn đã lưu DB thành công
             }
 
-            // 3. Hiển thị thông báo thành công và chuyển hướng (hoặc hiển thị thông tin chuyển khoản)
+            // 3. Hiển thị thông báo thành công và thông tin chuyển khoản VietQR
             showPaymentModal(order.name, order.phone, order.access_code, order.amount);
 
         } catch (err) {
-            console.error("Đăng ký lỗi:", err);
-            alert("Có lỗi xảy ra trong quá trình đăng ký: " + err.message);
+            console.error("Lỗi đăng ký:", err);
+            alert("Đã xảy ra lỗi trong quá trình xử lý đăng ký: " + err.message);
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerText = originalBtnText;
@@ -257,40 +259,41 @@ function initOrderForm() {
     });
 }
 
-function showPaymentModal(name, phone, code, amount) {
-    // Tạo modal thanh toán chèn trực tiếp vào DOM
-    const modalHtml = `
-        <div id="payment-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:9999; padding: 20px;">
-            <div style="background:var(--bg-card); color:var(--text-main); padding:32px; border-radius:16px; max-width:500px; width:100%; border:1px solid var(--border-color); box-shadow:var(--shadow); position:relative; text-align:center;">
-                <h3 style="font-family:var(--font-serif); font-size:1.8rem; margin-bottom:16px; color:var(--primary);">Đăng Ký Thành Công!</h3>
-                <p style="margin-bottom:20px; font-size:0.95rem;">Chào <strong>${name}</strong>, đơn hàng của bạn đã được ghi nhận trên hệ thống.</p>
-                
-                <div style="background:var(--bg-color); border:1px dashed var(--primary); padding:16px; border-radius:12px; margin-bottom:24px; text-align:left; font-size:0.92rem;">
-                    <p style="margin-bottom:8px;"><strong>Mã kích hoạt của bạn:</strong> <span style="font-family:monospace; font-size:1.1rem; color:var(--primary); font-weight:700;">${code}</span></p>
-                    <p>*(Mã này sẽ được kích hoạt ngay sau khi bạn hoàn tất thanh toán)*</p>
-                </div>
-                
-                <h4 style="margin-bottom:12px; font-weight:600;">Thông Tin Chuyển Khoản:</h4>
-                <div style="background:var(--bg-color); padding:16px; border-radius:12px; text-align:left; font-size:0.9rem; line-height:1.6; margin-bottom:24px;">
-                    <p><strong>Ngân hàng:</strong> BIDV</p>
-                    <p><strong>Số tài khoản:</strong> 0982581222</p>
-                    <p><strong>Chủ tài khoản:</strong> ĐINH KHÁNH TÙNG</p>
-                    <p><strong>Số tiền:</strong> ${amount.toLocaleString('vi-VN')} VNĐ</p>
-                    <p><strong>Nội dung chuyển khoản:</strong> <span style="color:var(--primary); font-weight:700;">${phone} ${code}</span></p>
-                </div>
-                
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:24px;">Sau khi chuyển khoản, Admin sẽ kích hoạt tài khoản của bạn trong 2-5 phút. Bạn có thể sử dụng Số điện thoại và Mã kích hoạt trên để đọc sách tại trang <strong>Đọc Sách Online</strong>.</p>
-                
-                <button id="close-modal-btn" class="btn btn-primary" style="width:100%;">Tôi Đã Chuyển Khoản</button>
-            </div>
-        </div>
-    `;
+// 5. Quản lý hiển thị Modal chuyển khoản
+function showPaymentModal(name, phone, accessCode, amount) {
+    const modal = document.getElementById("payment-modal-box");
+    const codeVal = document.getElementById("payment-code-val");
+    const qrGraphic = document.getElementById("payment-qr-graphic");
+    const closeBtn = document.getElementById("close-modal-btn");
+
+    if (!modal) return;
+
+    // Hiển thị mã nội dung chuyển khoản
+    codeVal.innerText = accessCode;
+
+    // Tự động tạo ảnh QR VietQR bằng API mở (nhanh, chuẩn và tự động điền nội dung)
+    // Cấu trúc VietQR API: https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-<TEMPLATE>.png?amount=<AMOUNT>&addInfo=<DESCRIPTION>&accountName=<ACCOUNT_NAME>
+    // BIDV ID là: bidv, Số tài khoản: 0982581222, Tên: DINH KHANH TUNG
+    const description = encodeURIComponent(accessCode);
+    const accountName = encodeURIComponent("DINH KHANH TUNG");
+    const qrUrl = `https://img.vietqr.io/image/bidv-0982581222-compact.png?amount=${amount}&addInfo=${description}&accountName=${accountName}`;
     
-    document.body.insertAdjacentHTML("beforeend", modalHtml);
-    
-    document.getElementById("close-modal-btn").addEventListener("click", () => {
-        document.getElementById("payment-modal").remove();
-        // Reset form
-        document.getElementById("order-form").reset();
-    });
+    if (qrGraphic) {
+        qrGraphic.innerHTML = `<img src="${qrUrl}" alt="VietQR Viet Nam" style="max-width: 100%; max-height: 100%; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">`;
+    }
+
+    // Kích hoạt modal
+    modal.classList.add("active");
+
+    // Xử lý đóng modal
+    const closeModal = () => {
+        modal.classList.remove("active");
+        alert(`Cảm ơn bạn đã đăng ký! Vui lòng chờ 1-3 phút để admin xác nhận giao dịch. Mã truy cập của bạn là: ${accessCode}. Bạn có thể dùng mã này đăng nhập vào trang "Đọc Online" để đọc sách.`);
+        window.location.hash = "intro"; // Quay lại top
+    };
+
+    closeBtn.onclick = closeModal;
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
 }
