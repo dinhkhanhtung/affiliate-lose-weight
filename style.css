@@ -294,18 +294,18 @@ nav {
 }
 
 .hero-book-img {
-    width: 460px;
+    width: 320px;
     height: auto;
-    max-width: 140%;
-    margin: -30px -50px;
+    max-width: 100%;
+    margin: 0;
     transition: var(--transition);
-    transform: rotate(1.5deg);
-    filter: drop-shadow(0 10px 25px rgba(13, 30, 26, 0.05));
+    transform: rotate(1deg);
+    filter: drop-shadow(10px 15px 30px rgba(13, 30, 26, 0.12));
 }
 
 .hero-cover-container:hover .hero-book-img {
-    transform: scale(1.04) rotate(-0.5deg);
-    filter: drop-shadow(0 15px 35px rgba(13, 30, 26, 0.08));
+    transform: scale(1.05) rotate(-1deg);
+    filter: drop-shadow(15px 25px 40px rgba(13, 30, 26, 0.18));
 }
 
 /* Payment Status Box */
@@ -1178,13 +1178,33 @@ nav {
     .hero-grid {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 40px;
+        gap: 32px;
     }
     .hero h1 {
-        font-size: 2.8rem;
+        font-size: 2.5rem;
     }
     .hero-content {
         align-items: center;
+    }
+    .hero-cta-box {
+        flex-direction: column;
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto;
+        gap: 12px;
+    }
+    .hero-cta-box .btn {
+        width: 100%;
+        text-align: center;
+    }
+    .hero-book-img {
+        width: 360px;
+        max-width: 90%;
+        margin: 10px auto;
+        transform: rotate(0deg) !important;
+    }
+    .hero-cover-container:hover .hero-book-img {
+        transform: scale(1.03) !important;
     }
     .calc-grid, .preview-grid, .order-grid {
         grid-template-columns: 1fr;
@@ -1201,11 +1221,61 @@ nav {
         display: none;
     }
     .hero h1 {
-        font-size: 2.4rem;
+        font-size: 2.1rem;
+        line-height: 1.22;
+    }
+    .hero p.hero-desc {
+        font-size: 1.05rem;
+        margin-bottom: 28px;
+    }
+    .hero-book-img {
+        width: 290px;
     }
     .pricing-box {
         padding: 36px 24px;
     }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.85rem;
+    }
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Back to Top Button */
+.back-to-top-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(28, 125, 92, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 999;
+}
+
+.back-to-top-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(28, 125, 92, 0.35);
+}
+
+.back-to-top-btn.active {
+    opacity: 1;
+    visibility: visible;
 }
 /* Footer Styles */
 footer {

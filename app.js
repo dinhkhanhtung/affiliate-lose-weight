@@ -392,3 +392,24 @@ function showPaymentModal(name, phone, accessCode, amount) {
         }
     };
 }
+
+// 6. Xử lý nút Back to Top (Quay lại đầu trang)
+document.addEventListener("DOMContentLoaded", () => {
+    const backToTopBtn = document.getElementById("back-to-top");
+    if (backToTopBtn) {
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 400) {
+                backToTopBtn.classList.add("active");
+            } else {
+                backToTopBtn.classList.remove("active");
+            }
+        });
+        
+        backToTopBtn.addEventListener("click", () => {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+    }
+});
