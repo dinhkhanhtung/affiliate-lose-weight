@@ -1,7 +1,45 @@
 const https = require('https');
 
+function telegramPost(url, body, headers = {}) {
+    return new Promise((resolve, reject) => {
+        const urlObj = new URL(url);
+        const postData = typeof body === 'string' ? body : JSON.stringify(body);
+        
+        const options = {
+            hostname: urlObj.hostname,
+            port: 443,
+            path: urlObj.pathname + urlObj.search,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...headers
+            }
+        };
+
+        const req = https.request(options, (res) => {
+            let resBody = '';
+            res.on('data', (chunk) => {
+                resBody += chunk;
+            });
+            res.on('end', () => {
+                resolve({
+                    statusCode: res.statusCode,
+                    body: resBody
+                });
+            });
+        });
+
+        req.on('error', (e) => {
+            reject(e);
+        });
+
+        req.write(postData);
+        req.end();
+    });
+}
+
 module.exports = async (req, res) => {
-    // Cấu hình CORS
+    // CORS headers
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
@@ -18,65 +56,89 @@ module.exports = async (req, res) => {
 
     try {
         const { messages } = req.body;
-        
-        // Đọc OpenAI Key từ biến môi trường Vercel (bảo mật tuyệt đối, không có key cứng)
-        const apiKey = process.env.OPENAI_API_KEY;
 
-        if (!apiKey) {
-            return res.status(500).json({ error: 'OpenAI API key is not configured on Vercel environment variables.' });
-        }
+        // Lấy API Keys từ Environment Variables (không chèn key cứng vào mã nguồn)
+        const geminiKey = process.env.GEMINI_API_KEY;
+        const openaiKey = process.env.OPENAI_API_KEY;
 
-        const response = await new Promise((resolve, reject) => {
-            const postData = JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: messages,
-                temperature: 0.7
+        // 1. NẾU CÓ GEMINI KEY -> DÙNG GEMINI LÀM MẶC ĐỊNH
+        if (geminiKey) {
+            // Chuyển đổi cấu trúc OpenAI messages sang cấu trúc Gemini API
+            const contents = [];
+            let systemInstructionText = "";
+
+            messages.forEach(msg => {
+                if (msg.role === 'system') {
+                    systemInstructionText = msg.content;
+                } else {
+                    contents.push({
+                        role: msg.role === 'assistant' ? 'model' : 'user',
+                        parts: [{ text: msg.content }]
+                    });
+                }
             });
 
-            const options = {
-                hostname: 'api.openai.com',
-                port: 443,
-                path: '/v1/chat/completions',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Length': Buffer.byteLength(postData)
+            const geminiPayload = {
+                contents: contents,
+                generationConfig: {
+                    temperature: 0.7
                 }
             };
 
-            const request = https.request(options, (responseStream) => {
-                let responseBody = '';
-                responseStream.on('data', (chunk) => {
-                    responseBody += chunk;
+            if (systemInstructionText) {
+                geminiPayload.systemInstruction = {
+                    parts: [{ text: systemInstructionText }]
+                };
+            }
+
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+            
+            const response = await telegramPost(geminiUrl, geminiPayload);
+            const responseData = JSON.parse(response.body);
+
+            if (response.statusCode === 200 && responseData.candidates && responseData.candidates[0]) {
+                const aiReply = responseData.candidates[0].content.parts[0].text;
+                
+                // Trả về định dạng tương thích với Client (OpenAI format)
+                return res.status(200).json({
+                    choices: [
+                        {
+                            message: {
+                                role: 'assistant',
+                                content: aiReply
+                            }
+                        }
+                    ]
                 });
-                responseStream.on('end', () => {
-                    resolve({
-                        statusCode: responseStream.statusCode,
-                        body: responseBody
-                    });
-                });
-            });
-
-            request.on('error', (err) => {
-                reject(err);
-            });
-
-            request.write(postData);
-            request.end();
-        });
-
-        const responseData = JSON.parse(response.body);
-
-        if (response.statusCode !== 200) {
-            console.error('OpenAI API returned error:', responseData);
-            return res.status(response.statusCode).json({ error: responseData.error ? responseData.error.message : 'Unknown OpenAI error' });
+            } else {
+                console.warn('Gemini API failed, checking fallback to OpenAI...', responseData);
+                // Nếu lỗi, tự động trượt xuống gọi OpenAI bên dưới
+            }
         }
 
-        return res.status(200).json(responseData);
+        // 2. PHƯƠNG ÁN DỰ PHÒNG: GỌI OPENAI
+        if (openaiKey) {
+            const openaiUrl = 'https://api.openai.com/v1/chat/completions';
+            const response = await telegramPost(openaiUrl, {
+                model: 'gpt-4o-mini',
+                messages: messages,
+                temperature: 0.7
+            }, {
+                'Authorization': `Bearer ${openaiKey}`
+            });
+
+            const responseData = JSON.parse(response.body);
+            if (response.statusCode === 200) {
+                return res.status(200).json(responseData);
+            } else {
+                return res.status(response.statusCode).json({ error: responseData.error ? responseData.error.message : 'OpenAI API Error' });
+            }
+        }
+
+        return res.status(500).json({ error: 'No active AI API configuration (Gemini/OpenAI) found on Server.' });
 
     } catch (error) {
-        console.error('Chat API server error:', error);
+        console.error('Chat API Error:', error);
         return res.status(500).json({ error: error.message });
     }
 };
