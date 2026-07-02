@@ -1,0 +1,14 @@
+A Word About the Fonts...
+
+The package you just downloaded includes fonts that were used to make the graphics.
+If you'd like to revise the graphics in your favorite image program, you'll need to
+make sure these fonts are on your computer.  To install them, simply click on the font files and extract them to
+
+C:\Windows\Fonts 
+(for Windows 95, 98, XP) or
+
+C:\WINNT\Fonts
+(for Windows 2000)
+
+You can extract them by using your favorite zip/unzip utility. Consult the program's 
+help file for more information.
