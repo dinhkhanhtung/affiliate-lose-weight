@@ -1,0 +1,12 @@
+{
+  "name": "affiliate-lose-weight",
+  "version": "1.0.0",
+  "description": "Ebook Giảm Cân Không Hành Xác & AI Coach integration",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo \"Static site running directly\""
+  },
+  "dependencies": {
+    "pg": "^8.11.3"
+  }
+}

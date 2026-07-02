@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đọc Ebook Online & Cố Vấn AI | Giảm Cân Không Hành Xác</title>
+    
+    <!-- CSS chính -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Supabase Client từ CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* CSS bổ sung dành riêng cho trang Reader Login */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, var(--primary-light) 0%, var(--bg-color) 100%);
+            padding: 20px;
+        }
+        .login-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .login-card h2 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        .login-card p {
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+        .chapter-list-menu {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 24px;
+        }
+        .chapter-menu-item {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: left;
+        }
+        .chapter-menu-item:hover, .chapter-menu-item.active {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+        /* Hạn chế copy F12 cơ bản */
+        .no-select {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GIAO DIỆN ĐĂNG NHẬP -->
+    <div id="login-section" class="login-container">
+        <div class="login-card">
+            <h2>Đọc Sách Online</h2>
+            <p>Vui lòng nhập Số điện thoại đăng ký và Mã kích hoạt đã nhận để bắt đầu.</p>
+            
+            <form id="reader-login-form">
+                <div class="form-group" style="text-align: left;">
+                    <label for="login-phone">Số điện thoại / Zalo</label>
+                    <input type="tel" id="login-phone" required placeholder="Ví dụ: 0982581222">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label for="login-code">Mã kích hoạt (6 ký tự)</label>
+                    <input type="text" id="login-code" required placeholder="Ví dụ: ABCXYZ" style="text-transform: uppercase;">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;" id="login-submit-btn">Đăng Nhập Đọc Sách</button>
+            </form>
+            
+            <a href="index.html" style="display: inline-block; margin-top: 24px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem;" id="back-home-link">← Quay về Trang chủ</a>
+        </div>
+    </div>
+
+    <!-- GIAO DIỆN ĐỌC SÁCH CHÍNH (Ẩn lúc đầu) -->
+    <div id="reader-section" style="display: none;">
+        <!-- Header Reader -->
+        <header>
+            <div class="container">
+                <nav>
+                    <a href="index.html" class="logo" id="reader-logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                        FitLife Ebook
+                    </a>
+                    <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-muted);" id="user-info-display">
+                        Chào bạn, <span id="display-user-name" style="color: var(--text-main);">Độc giả</span>
+                    </div>
+                    <div class="nav-actions">
+                        <button class="theme-toggle" id="reader-theme-toggle" aria-label="Toggle theme"></button>
+                        <button class="btn" id="logout-btn" style="padding: 8px 16px;">Đăng Xuất</button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Layout Đọc sách + Sidebar Chat AI -->
+        <div class="reader-layout">
+            
+            <!-- Menu Chương & Nội Dung Sách -->
+            <div class="reader-main">
+                <div class="reader-container">
+                    <div class="reader-header">
+                        <h1 id="chapter-title" class="no-select">Đang tải chương học...</h1>
+                        <span id="chapter-number" style="font-size: 0.9rem; background-color: var(--border-color); padding: 4px 10px; border-radius: 50px; font-weight: 600;">--</span>
+                    </div>
+                    
+                    <!-- Phần hiển thị nội dung sách (Được bảo vệ chống copy) -->
+                    <div class="reader-content no-select" id="chapter-content">
+                        <p>Nội dung đang được tải từ cơ sở dữ liệu bảo mật...</p>
+                    </div>
+                    
+                    <!-- Điều hướng chương -->
+                    <div class="reader-nav">
+                        <button class="btn" id="prev-chapter-btn">← Chương trước</button>
+                        
+                        <!-- Dropdown chọn chương nhanh -->
+                        <select id="chapter-select" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: var(--font-sans); background: var(--bg-card); color: var(--text-main);">
+                            <option value="">Chọn chương...</option>
+                        </select>
+                        
+                        <button class="btn btn-primary" id="next-chapter-btn">Chương tiếp theo →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trợ lý Dinh Dưỡng AI Sidebar -->
+            <div class="ai-sidebar">
+                <div class="ai-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <div>
+                        <div class="ai-header-title">Cố Vấn Dinh Dưỡng AI</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Trợ lý giảm cân đồng hành cùng bạn</div>
+                    </div>
+                    <div class="ai-header-badge" id="ai-credit-display">Còn 20 lượt</div>
+                </div>
+                
+                <!-- Khu vực tin nhắn -->
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-bubble chat-bubble-ai">
+                        Xin chào! Tôi là Trợ lý Dinh dưỡng AI của bạn. Tôi đã được học toàn bộ cuốn sách <strong>Giảm Cân Không Hành Xác</strong> này.<br><br>
+                        Bạn có thể hỏi tôi bất kỳ thắc mắc nào về kiến thức giảm cân, nhờ tôi lên thực đơn ăn no phù hợp với cơ thể bạn, hoặc tính lượng calo cho món ăn bất kỳ. Hãy bắt đầu nhé!
+                    </div>
+                </div>
+                
+                <!-- Ô nhập tin nhắn -->
+                <div class="chat-input-area">
+                    <form id="chat-form">
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-input" placeholder="Đặt câu hỏi cho Cố vấn AI..." required autocomplete="off">
+                            <button type="submit" class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Script cấu hình và logic -->
+    <script src="config.js"></script>
+    <script src="reader.js"></script>
+</body>
+</html>
