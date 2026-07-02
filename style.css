@@ -293,185 +293,52 @@ nav {
     perspective: 1000px;
 }
 
-.hero-cover-3d {
-    width: 280px;
-    height: 400px;
-    background-color: #fafaf9; /* Bìa kem nhạt của sách giấy */
-    border-radius: 4px 18px 18px 4px;
-    box-shadow: 
-        -1px 0 2px rgba(255, 255, 255, 0.8) inset,
-        15px 15px 35px rgba(13, 30, 26, 0.12),
-        1px 0 0px rgba(0, 0, 0, 0.06);
-    transform: rotateY(-18deg) rotateX(6deg) rotateZ(2deg);
+.hero-book-img {
+    width: 310px;
+    height: auto;
+    border-radius: 6px 16px 16px 6px;
+    filter: drop-shadow(15px 15px 30px rgba(13, 30, 26, 0.15));
+    transform: rotateY(-16deg) rotateX(4deg) rotateZ(1deg);
     transform-style: preserve-3d;
     transition: var(--transition);
-    position: relative;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    overflow: visible;
 }
 
-/* Các chi tiết lấp lánh và trang bên hông 3D */
-.book-spine-crease {
-    position: absolute;
-    top: 0;
-    left: 12px;
-    width: 2px;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.05);
-    box-shadow: 1px 0 2px rgba(0, 0, 0, 0.02);
-    z-index: 10;
+.hero-cover-container:hover .hero-book-img {
+    transform: rotateY(-6deg) rotateX(2deg) rotateZ(0deg) scale(1.05);
+    filter: drop-shadow(25px 25px 40px rgba(13, 30, 26, 0.22));
 }
 
-.hero-cover-3d::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 12px;
-    height: 100%;
-    background: linear-gradient(to right, rgba(0,0,0,0.06) 0%, rgba(255,255,255,0.15) 100%);
-    border-radius: 4px 0 0 4px;
-    z-index: 9;
-}
-
-.hero-cover-3d::after {
-    content: '';
-    position: absolute;
-    top: 2%;
-    right: -12px;
-    width: 12px;
-    height: 96%;
-    background: linear-gradient(to right, #e2e8f0 0%, #ffffff 80%, #cbd5e1 100%);
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-    border-radius: 0 4px 4px 0;
-    transform: rotateY(90deg) translateZ(-6px);
-    z-index: -1;
-}
-
-.book-cover-front {
+/* Payment Status Box */
+.payment-status-box {
+    margin-top: 16px;
+    background-color: var(--primary-light);
+    border: 1px dashed var(--primary);
+    border-radius: 12px;
+    padding: 12px 18px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    padding: 28px 20px 24px 28px;
-    text-align: center;
-}
-
-.book-tagline {
-    display: inline-block;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 0.65rem;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 50px;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
-}
-
-.book-title-main {
-    font-family: var(--font-title);
-    font-size: 2.15rem;
-    font-weight: 900;
-    color: #111827;
-    line-height: 1.1;
-}
-
-.book-title-sub {
-    font-family: var(--font-title);
-    font-size: 1.85rem;
-    font-weight: 900;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--primary);
-    line-height: 1.1;
-    margin-bottom: 8px;
+    transition: var(--transition);
 }
 
-.book-meta-small {
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 700;
+.payment-status-box.success {
+    background-color: rgba(28, 125, 92, 0.08);
+    border-color: #1c7d5c;
+    color: #1c7d5c;
 }
 
-.book-ribbon {
-    background: linear-gradient(135deg, #1c7d5c 0%, #0f5c43 100%);
-    color: #ffffff;
-    padding: 6px 4px;
-    font-size: 0.52rem;
-    font-weight: 800;
-    letter-spacing: 0.3px;
-    border-radius: 4px;
-    margin: 12px -6px 12px -14px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-    transform: rotate(-1deg);
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
-.book-illustration-box {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    margin-top: 10px;
-}
-
-.salad-bowl-vector {
-    width: 105px;
-    height: 105px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #fcfcfb 60%, #e2e8f0 100%);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.05), 0 0 0 3px var(--primary);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.salad-bowl-vector::before {
-    content: '🥗';
-    font-size: 3.8rem;
-    position: absolute;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.12));
-}
-
-.book-badge-sticker {
-    position: absolute;
-    bottom: 40px;
-    right: -36px;
-    width: 76px;
-    height: 76px;
-    background: radial-gradient(circle, #fcd34d 0%, #fb923c 100%);
-    border-radius: 50%;
-    box-shadow: 0 6px 15px rgba(249, 115, 22, 0.25), 0 0 0 2px #ffffff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #000000;
-    text-align: center;
-    z-index: 20;
-    transform: rotate(12deg) translateZ(20px);
-    pointer-events: none;
-}
-
-.sticker-num {
-    font-size: 0.65rem;
-    font-weight: 900;
-    line-height: 1.1;
-}
-
-.sticker-lbl {
-    font-size: 0.5rem;
-    font-weight: 800;
-    line-height: 1.1;
-    opacity: 0.9;
-}
-
-.hero-cover-container:hover .hero-cover-3d {
-    transform: rotateY(-5deg) rotateX(0deg) rotateZ(0deg) scale(1.04);
-    box-shadow: 30px 30px 60px rgba(0, 0, 0, 0.25);
+.status-icon-spin {
+    display: inline-block;
+    animation: spin 1.5s linear infinite;
+    font-size: 1.1rem;
 }
 
 /* Pain & Why We Fail Sections */

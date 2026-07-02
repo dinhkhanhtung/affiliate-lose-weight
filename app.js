@@ -260,41 +260,135 @@ function initOrderForm() {
     });
 }
 
-// 5. Quản lý hiển thị Modal chuyển khoản
+// 5. Quản lý hiển thị Modal chuyển khoản và kiểm tra duyệt đơn hàng tự động
 function showPaymentModal(name, phone, accessCode, amount) {
     const modal = document.getElementById("payment-modal-box");
     const codeVal = document.getElementById("payment-code-val");
     const qrGraphic = document.getElementById("payment-qr-graphic");
     const closeBtn = document.getElementById("close-modal-btn");
+    const statusBox = document.getElementById("payment-status-box");
+    const statusIcon = document.getElementById("payment-status-icon");
+    const statusText = document.getElementById("payment-status-text");
 
     if (!modal) return;
+
+    let isApproved = false;
+    let pollingInterval = null;
+
+    // Reset giao diện Trạng thái về mặc định
+    if (statusBox) {
+        statusBox.classList.remove("success");
+        statusBox.style.borderStyle = "dashed";
+    }
+    if (statusIcon) {
+        statusIcon.innerText = "🔄";
+        statusIcon.style.animation = "spin 1.5s linear infinite";
+    }
+    if (statusText) {
+        statusText.innerText = "Hệ thống đang chờ quét mã chuyển khoản...";
+    }
+    closeBtn.innerText = "Xác nhận đã chuyển khoản";
+    closeBtn.className = "btn btn-primary";
 
     // Hiển thị mã nội dung chuyển khoản
     codeVal.innerText = accessCode;
 
     // Tự động tạo ảnh QR VietQR bằng API mở (nhanh, chuẩn và tự động điền nội dung)
-    // Cấu trúc VietQR API: https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-<TEMPLATE>.png?amount=<AMOUNT>&addInfo=<DESCRIPTION>&accountName=<ACCOUNT_NAME>
-    // BIDV ID là: bidv, Số tài khoản: 0982581222, Tên: DINH KHANH TUNG
     const description = encodeURIComponent(accessCode);
     const accountName = encodeURIComponent("DINH KHANH TUNG");
     const qrUrl = `https://img.vietqr.io/image/bidv-0982581222-compact.png?amount=${amount}&addInfo=${description}&accountName=${accountName}`;
     
     if (qrGraphic) {
-        qrGraphic.innerHTML = `<img src="${qrUrl}" alt="VietQR Viet Nam" style="max-width: 100%; max-height: 100%; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">`;
+        qrGraphic.innerHTML = `<img src="${qrUrl}" alt="VietQR Viet Nam" style="max-width: 100%; max-height: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">`;
     }
 
     // Kích hoạt modal
     modal.classList.add("active");
 
-    // Xử lý đóng modal
-    const closeModal = () => {
-        modal.classList.remove("active");
-        alert(`Cảm ơn bạn đã đăng ký! Vui lòng chờ 1-3 phút để admin xác nhận giao dịch. Mã truy cập của bạn là: ${accessCode}. Bạn có thể dùng mã này đăng nhập vào trang "Đọc Online" để đọc sách.`);
-        window.location.hash = "intro"; // Quay lại top
+    // Hàm gọi Supabase kiểm tra trạng thái đơn hàng (Approved hay chưa)
+    const checkPaymentStatus = async () => {
+        try {
+            if (!supabaseClient) return;
+            const { data, error } = await supabaseClient
+                .from("orders")
+                .select("status")
+                .eq("phone", phone)
+                .eq("access_code", accessCode)
+                .maybeSingle();
+
+            if (data && data.status === "approved") {
+                isApproved = true;
+                clearInterval(pollingInterval);
+                
+                // Cập nhật giao diện Thành công
+                if (statusBox) {
+                    statusBox.classList.add("success");
+                    statusBox.style.borderStyle = "solid";
+                }
+                if (statusIcon) {
+                    statusIcon.innerText = "✅";
+                    statusIcon.style.animation = "none";
+                }
+                if (statusText) {
+                    statusText.innerHTML = "<strong>Giao dịch đã được duyệt thành công!</strong> Cảm ơn bạn.";
+                }
+                
+                // Đổi nút bấm chính sang truy cập sách trực tiếp
+                closeBtn.innerText = "Bắt đầu đọc sách ngay 📖";
+                closeBtn.style.backgroundColor = "#1c7d5c"; // Lục bảo
+                closeBtn.style.borderColor = "#1c7d5c";
+                closeBtn.onclick = () => {
+                    sessionStorage.setItem("reader_phone", phone);
+                    sessionStorage.setItem("reader_code", accessCode);
+                    modal.classList.remove("active");
+                    window.location.href = "reader.html";
+                };
+            }
+        } catch (err) {
+            console.error("Lỗi khi kiểm tra trạng thái đơn hàng:", err);
+        }
     };
 
-    closeBtn.onclick = closeModal;
+    // Khởi chạy vòng kiểm tra tự động cứ mỗi 3 giây
+    pollingInterval = setInterval(checkPaymentStatus, 3000);
+
+    // Xử lý đóng modal hoặc bấm nút thủ công
+    const handleManualConfirmation = async () => {
+        if (isApproved) {
+            // Nếu đã approved thì chuyển trang
+            sessionStorage.setItem("reader_phone", phone);
+            sessionStorage.setItem("reader_code", accessCode);
+            modal.classList.remove("active");
+            window.location.href = "reader.html";
+            return;
+        }
+
+        // Nếu chưa approved, hiển thị trạng thái đang kiểm tra thủ công nhanh
+        closeBtn.disabled = true;
+        closeBtn.innerText = "Đang kiểm tra giao dịch...";
+        if (statusText) statusText.innerText = "Đang kết nối ngân hàng để kiểm tra giao dịch...";
+
+        // Kiểm tra nhanh 1 lần
+        await checkPaymentStatus();
+
+        setTimeout(() => {
+            if (isApproved) return; // Nếu vừa duyệt thì bỏ qua
+
+            // Vẫn chưa duyệt, hiển thị thông báo tiến độ chờ kích hoạt
+            clearInterval(pollingInterval);
+            modal.classList.remove("active");
+            alert(`Hệ thống đang ghi nhận giao dịch của bạn.\n\nVui lòng chờ 1-3 phút để hệ thống tự động đối soát ngân hàng. Mã kích hoạt của bạn là [ ${accessCode} ].\n\nNếu quá thời gian trên chưa truy cập được sách, vui lòng liên hệ Zalo Admin Đinh Khánh Tùng (0982581222) để được hỗ trợ kích hoạt nhanh nhất!`);
+            window.location.hash = "intro";
+        }, 3000);
+    };
+
+    closeBtn.onclick = handleManualConfirmation;
+
+    // Đóng modal khi click ra ngoài overlay (Đồng thời tắt setInterval)
     modal.onclick = (e) => {
-        if (e.target === modal) closeModal();
+        if (e.target === modal) {
+            clearInterval(pollingInterval);
+            modal.classList.remove("active");
+        }
     };
 }

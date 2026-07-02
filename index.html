@@ -68,33 +68,9 @@
                         <a href="#calc" class="btn btn-large" id="hero-calc-btn">Tính BMI/TDEE miễn phí</a>
                     </div>
                 </div>
-                <!-- 2. Mockup Ebook 3D -->
+                <!-- 2. Mockup Ebook 3D từ ảnh thật -->
                 <div class="hero-cover-container">
-                    <div class="hero-cover-3d">
-                        <div class="book-spine-crease"></div>
-                        <div class="book-cover-front">
-                            <div class="book-header-group">
-                                <span class="book-tagline">BÍ QUYẾT KHOA HỌC</span>
-                                <div class="book-title-main">ĂN NO</div>
-                                <div class="book-title-sub">Vẫn Giảm Cân</div>
-                                <div class="book-meta-small">Science • Food • Lifestyle</div>
-                            </div>
-                            
-                            <div class="book-ribbon">
-                                <span>HƯỚNG DẪN GIẢM CÂN BỀN VỮNG CHO NGƯỜI BẬN RỘN</span>
-                            </div>
-                            
-                            <div class="book-illustration-box">
-                                <div class="salad-bowl-vector"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Golden Circular Sticker -->
-                        <div class="book-badge-sticker">
-                            <span class="sticker-num">HƠN 2.100</span>
-                            <span class="sticker-lbl">NGƯỜI ĐÃ ĐỌC</span>
-                        </div>
-                    </div>
+                    <img src="book-cover.png" alt="Sách Ăn No Vẫn Giảm Cân" class="hero-book-img">
                 </div>
             </div>
         </div>
@@ -616,7 +592,13 @@
                 </div>
             </div>
             
-            <button class="btn btn-primary" style="width: 100%; margin-top: 24px;" id="close-modal-btn">Xác nhận đã chuyển khoản</button>
+            <!-- Trạng thái kiểm tra thanh toán tự động -->
+            <div class="payment-status-box" id="payment-status-box">
+                <span class="status-icon-spin" id="payment-status-icon">🔄</span>
+                <span id="payment-status-text">Hệ thống đang chờ quét mã chuyển khoản...</span>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" id="close-modal-btn">Xác nhận đã chuyển khoản</button>
         </div>
     </div>
 
@@ -683,7 +665,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>Website được thiết kế tỉ mỉ & vận hành an toàn trên nền tảng Vercel + Supabase.</p>
+                <p>Hệ thống được bảo mật tối đa và vận hành tự động 24/7.</p>
                 <div style="display: flex; gap: 16px;">
                     <a href="#faq" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.8rem;">Câu hỏi thường gặp</a>
                     <span style="color: rgba(255,255,255,0.2);">|</span>

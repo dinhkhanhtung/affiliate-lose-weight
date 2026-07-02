@@ -81,7 +81,10 @@ module.exports = async (req, res) => {
             }
 
             // 1. Kết nối PostgreSQL trực tiếp để kiểm tra và cập nhật
-            const client = new Client({ connectionString: dbConnString });
+            const client = new Client({
+                connectionString: dbConnString,
+                ssl: dbConnString.includes('localhost') || dbConnString.includes('127.0.0.1') ? false : { rejectUnauthorized: false }
+            });
             await client.connect();
 
             // Truy vấn đơn hàng
