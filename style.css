@@ -1,36 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-    /* Light Mode - Phong cách Apple Clean & Mint Fresh */
-    --bg-color: #f5f7f9;
-    --bg-card: rgba(255, 255, 255, 0.85);
+    /* Light Mode - Phong cách Apple Clean & Forest Organic */
+    --bg-color: #f4f6f3; /* Màu trắng kem nhạt hữu cơ từ Banner */
+    --bg-color-rgb: 244, 246, 243;
+    --bg-card: rgba(255, 255, 255, 0.9);
     --bg-card-solid: #ffffff;
-    --text-main: #1d1d1f; /* Màu chữ đen xám của Apple */
-    --text-muted: #86868b; /* Màu chữ nhạt của Apple */
-    --primary: #10b981; /* Ngọc Lục Bảo Mint */
-    --primary-hover: #059669;
-    --primary-light: rgba(16, 185, 129, 0.06);
-    --border-color: rgba(0, 0, 0, 0.08);
-    --accent: #f59e0b;
-    --accent-light: rgba(245, 158, 11, 0.1);
-    --error: #ff3b30; /* Đỏ hệ thống Apple */
-    --success: #34c759; /* Xanh lá hệ thống Apple */
+    --text-main: #0d1e1a; /* Đen ánh lục rừng sâu */
+    --text-muted: #627570; /* Xám xịt organic */
+    --primary: #1c7d5c; /* Lục bảo đậm từ Banner */
+    --primary-hover: #0f5c43;
+    --primary-light: rgba(28, 125, 92, 0.06);
+    --border-color: rgba(13, 30, 26, 0.08);
+    --accent: #f97316; /* Cam ấm từ Banner */
+    --accent-light: rgba(249, 115, 22, 0.1);
+    --error: #ff3b30;
+    --success: #1c7d5c;
     --font-title: 'Outfit', sans-serif;
     --font-sans: 'Inter', sans-serif;
-    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Custom cubic ease-out cho Apple feel */
-    --shadow: 0 8px 30px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-    --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
-    --radius-card: 20px;
-    --radius-btn: 12px;
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow: 0 8px 30px rgba(13, 30, 26, 0.04), 0 1px 2px rgba(13, 30, 26, 0.02);
+    --shadow-hover: 0 20px 40px rgba(13, 30, 26, 0.08), 0 1px 3px rgba(13, 30, 26, 0.02);
+    --radius-card: 24px;
+    --radius-btn: 14px;
 }
 
 [data-theme="dark"] {
-    /* Dark Mode - Phong cách Obsidian đen của Linear */
-    --bg-color: #0b0c0e;
-    --bg-card: rgba(21, 23, 27, 0.7);
-    --bg-card-solid: #15171b;
-    --text-main: #f5f5f7;
-    --text-muted: #86868b;
+    /* Dark Mode - Phong cách Obsidian đen ánh rừng sâu */
+    --bg-color: #0a0e0c;
+    --bg-color-rgb: 10, 14, 12;
+    --bg-card: rgba(18, 26, 23, 0.7);
+    --bg-card-solid: #121a17;
+    --text-main: #f0f5f3;
+    --text-muted: #859993;
     --primary: #10b981;
     --primary-hover: #34d399;
     --primary-light: rgba(16, 185, 129, 0.12);
@@ -80,7 +82,7 @@ p {
 
 /* Header & Nav */
 header {
-    background-color: rgba(var(--bg-color), 0.7);
+    background-color: rgba(var(--bg-color-rgb), 0.75);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
@@ -294,19 +296,30 @@ nav {
 .hero-cover-3d {
     width: 280px;
     height: 400px;
-    border-radius: 8px 24px 24px 8px;
-    background: linear-gradient(135deg, #10b981 0%, #0369a1 100%);
-    box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.18), -3px 0 6px rgba(255, 255, 255, 0.15) inset;
+    background-color: #fafaf9; /* Bìa kem nhạt của sách giấy */
+    border-radius: 4px 18px 18px 4px;
+    box-shadow: 
+        -1px 0 2px rgba(255, 255, 255, 0.8) inset,
+        15px 15px 35px rgba(13, 30, 26, 0.12),
+        1px 0 0px rgba(0, 0, 0, 0.06);
     transform: rotateY(-18deg) rotateX(6deg) rotateZ(2deg);
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-style: preserve-3d;
+    transition: var(--transition);
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 32px;
-    color: #ffffff;
-    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: visible;
+}
+
+/* Các chi tiết lấp lánh và trang bên hông 3D */
+.book-spine-crease {
+    position: absolute;
+    top: 0;
+    left: 12px;
+    width: 2px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.05);
+    box-shadow: 1px 0 2px rgba(0, 0, 0, 0.02);
+    z-index: 10;
 }
 
 .hero-cover-3d::before {
@@ -314,26 +327,146 @@ nav {
     position: absolute;
     top: 0;
     left: 0;
-    width: 15px;
+    width: 12px;
     height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    background: linear-gradient(to right, rgba(0,0,0,0.06) 0%, rgba(255,255,255,0.15) 100%);
+    border-radius: 4px 0 0 4px;
+    z-index: 9;
 }
 
-.hero-cover-3d-title {
-    font-family: var(--font-title);
-    font-size: 1.95rem;
-    line-height: 1.25;
+.hero-cover-3d::after {
+    content: '';
+    position: absolute;
+    top: 2%;
+    right: -12px;
+    width: 12px;
+    height: 96%;
+    background: linear-gradient(to right, #e2e8f0 0%, #ffffff 80%, #cbd5e1 100%);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    border-radius: 0 4px 4px 0;
+    transform: rotateY(90deg) translateZ(-6px);
+    z-index: -1;
+}
+
+.book-cover-front {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 28px 20px 24px 28px;
+    text-align: center;
+}
+
+.book-tagline {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.65rem;
     font-weight: 800;
-    margin-top: 40px;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 4px 10px;
+    border-radius: 50px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
 }
 
-.hero-cover-3d-author {
-    font-size: 0.85rem;
-    opacity: 0.8;
+.book-title-main {
+    font-family: var(--font-title);
+    font-size: 2.15rem;
+    font-weight: 900;
+    color: #111827;
+    line-height: 1.1;
+}
+
+.book-title-sub {
+    font-family: var(--font-title);
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1.1;
+    margin-bottom: 8px;
+}
+
+.book-meta-small {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    font-weight: 700;
+}
+
+.book-ribbon {
+    background: linear-gradient(135deg, #1c7d5c 0%, #0f5c43 100%);
+    color: #ffffff;
+    padding: 6px 4px;
+    font-size: 0.52rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    border-radius: 4px;
+    margin: 12px -6px 12px -14px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    transform: rotate(-1deg);
+}
+
+.book-illustration-box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-top: 10px;
+}
+
+.salad-bowl-vector {
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fcfcfb 60%, #e2e8f0 100%);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05), 0 0 0 3px var(--primary);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.salad-bowl-vector::before {
+    content: '🥗';
+    font-size: 3.8rem;
+    position: absolute;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.12));
+}
+
+.book-badge-sticker {
+    position: absolute;
+    bottom: 40px;
+    right: -36px;
+    width: 76px;
+    height: 76px;
+    background: radial-gradient(circle, #fcd34d 0%, #fb923c 100%);
+    border-radius: 50%;
+    box-shadow: 0 6px 15px rgba(249, 115, 22, 0.25), 0 0 0 2px #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #000000;
+    text-align: center;
+    z-index: 20;
+    transform: rotate(12deg) translateZ(20px);
+    pointer-events: none;
+}
+
+.sticker-num {
+    font-size: 0.65rem;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+.sticker-lbl {
+    font-size: 0.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    opacity: 0.9;
 }
 
 .hero-cover-container:hover .hero-cover-3d {
@@ -1205,5 +1338,146 @@ nav {
     }
     .pricing-box {
         padding: 36px 24px;
+    }
+}
+/* Footer Styles */
+footer {
+    background-color: #093a2f; /* Deep forest green từ Banner */
+    color: #ffffff;
+    padding: 80px 0 40px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.footer-col h4 {
+    color: #ffffff;
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+    font-family: var(--font-title);
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: var(--accent);
+}
+
+.footer-col p {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.62;
+    margin-bottom: 16px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+    padding-left: 4px;
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-contact-item {
+    display: flex;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    align-items: flex-start;
+}
+
+.footer-contact-item svg {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-bottom p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.footer-payment-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-payment-info .bank-icon {
+    font-size: 1.5rem;
+}
+
+.footer-payment-info .bank-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-payment-info .bank-details span {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-payment-info .bank-details strong {
+    font-size: 0.85rem;
+    color: #ffffff;
+}
+
+@media (max-width: 992px) {
+    .footer-grid {
+        grid-template-columns: 1.5fr 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
     }
 }
