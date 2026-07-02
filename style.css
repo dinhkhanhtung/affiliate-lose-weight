@@ -1255,6 +1255,10 @@ nav {
     }
     
     /* Thiết kế form dễ chạm cho người lớn tuổi */
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
     .form-group label {
         font-size: 1.05rem;
         margin-bottom: 8px;
@@ -1544,9 +1548,11 @@ footer {
         padding-bottom: 72px;
     }
     
-    /* Điều chỉnh vị trí nút Back to Top cao hơn để tránh đè lên Bottom Bar */
+    /* Điều chỉnh vị trí nút Back to Top cao hơn và nhỏ hơn để tránh đè lên Bottom Bar & form */
     .back-to-top-btn {
-        bottom: 85px;
-        right: 20px;
+        bottom: 88px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
     }
 }
