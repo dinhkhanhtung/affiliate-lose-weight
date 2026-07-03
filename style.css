@@ -1333,10 +1333,36 @@ nav {
         line-height: 1.35;
     }
     
-    /* Phân bổ grid quà tặng cột đơn trên mobile */
-    .bonus-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
+    /* Chuyển đổi các danh sách dài thành thanh vuốt ngang (Horizontal Swiping Slider) trên di động */
+    .pain-grid, .bonus-grid, .testimonials-grid {
+        display: flex !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        scroll-behavior: smooth !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 16px !important;
+        padding: 8px 16px 24px 16px !important; /* Lề trái phải để không dính sát mép */
+        margin-left: -16px !important; /* Tràn lề để vuốt ra sát mép màn hình */
+        margin-right: -16px !important;
+        scrollbar-width: none !important;
+    }
+    
+    .pain-grid::-webkit-scrollbar, 
+    .bonus-grid::-webkit-scrollbar, 
+    .testimonials-grid::-webkit-scrollbar {
+        display: none !important;
+    }
+    
+    .pain-card, .bonus-card, .testimonial-card {
+        flex: 0 0 82% !important; /* Lộ 18% card tiếp theo để báo hiệu vuốt ngang */
+        max-width: 300px !important;
+        scroll-snap-align: center !important;
+        margin: 0 !important;
+        text-align: left !important;
+    }
+
+    .pain-card svg, .bonus-icon {
+        margin-left: 0 !important;
     }
     
     /* Tăng kích thước các đề mục và text để dễ đọc */
