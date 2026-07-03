@@ -393,23 +393,16 @@ function showPaymentModal(name, phone, accessCode, amount) {
             return;
         }
 
-        // Nếu chưa approved, hiển thị trạng thái đang kiểm tra thủ công nhanh
+        // Nếu chưa approved, cập nhật trạng thái ngay trong hộp thoại và tiếp tục chờ
         closeBtn.disabled = true;
-        closeBtn.innerText = "Đang kiểm tra giao dịch...";
-        if (statusText) statusText.innerText = "Đang kết nối ngân hàng để kiểm tra giao dịch...";
+        closeBtn.innerText = "Đang chờ đối soát tự động...";
+        
+        if (statusText) {
+            statusText.innerHTML = `<strong>Đang kiểm tra giao dịch chuyển khoản...</strong><br><span style="font-size: 0.85rem; opacity: 0.85; margin-top: 6px; display: inline-block; line-height: 1.4;">Hệ thống đang đối soát ngân hàng tự động (thường mất 1-3 phút). Vui lòng không đóng cửa sổ này, hệ thống sẽ tự động chuyển hướng khi đơn hàng được duyệt!</span>`;
+        }
 
-        // Kiểm tra nhanh 1 lần
+        // Kiểm tra nhanh 1 lần lập tức
         await checkPaymentStatus();
-
-        setTimeout(() => {
-            if (isApproved) return; // Nếu vừa duyệt thì bỏ qua
-
-            // Vẫn chưa duyệt, hiển thị thông báo tiến độ chờ kích hoạt
-            clearInterval(pollingInterval);
-            modal.classList.remove("active");
-            alert(`Hệ thống đang ghi nhận giao dịch của bạn.\n\nVui lòng chờ 1-3 phút để hệ thống tự động đối soát ngân hàng. Mã kích hoạt của bạn là [ ${accessCode} ].\n\nNếu quá thời gian trên chưa truy cập được sách, vui lòng liên hệ Zalo Admin Đinh Khánh Tùng (0982581222) để được hỗ trợ kích hoạt nhanh nhất!`);
-            window.location.hash = "intro";
-        }, 3000);
     };
 
     closeBtn.onclick = handleManualConfirmation;
