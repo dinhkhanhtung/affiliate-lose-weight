@@ -45,6 +45,24 @@ module.exports = async (req, res) => {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    // Các biến cần dùng chung ở block catch
+    let botToken = process.env.TELEGRAM_BOT_TOKEN || "8954238957:AAG7CigXYJBpwApP2AT_z5_UFxwKXpy-_gI";
+    let callbackId = null;
+
+    const answerCallback = async (text, showAlert = false) => {
+        if (!callbackId) return;
+        const url = `https://api.telegram.org/bot${botToken}/answerCallbackQuery`;
+        try {
+            await telegramPost(url, {
+                callback_query_id: callbackId,
+                text: text,
+                show_alert: showAlert
+            });
+        } catch (e) {
+            console.error("Error answering callback:", e);
+        }
+    };
+
     try {
         const update = req.body;
 
@@ -54,23 +72,13 @@ module.exports = async (req, res) => {
         }
 
         const callbackQuery = update.callback_query;
-        const callbackId = callbackQuery.id;
+        callbackId = callbackQuery.id;
         const cbData = callbackQuery.data || '';
         const message = callbackQuery.message || {};
         const chatId = message.chat ? message.chat.id : null;
         const messageId = message.message_id;
 
-        const botToken = process.env.TELEGRAM_BOT_TOKEN || "8954238957:AAG7CigXYJBpwApP2AT_z5_UFxwKXpy-_gI";
         const dbConnString = process.env.DATABASE_URL || "postgresql://postgres:T6Cz5p8TcXbw@db.zvhtcaicryjzkuesueoz.supabase.co:5432/postgres";
-
-        const answerCallback = async (text, showAlert = false) => {
-            const url = `https://api.telegram.org/bot${botToken}/answerCallbackQuery`;
-            await telegramPost(url, {
-                callback_query_id: callbackId,
-                text: text,
-                show_alert: showAlert
-            });
-        };
 
         if (cbData.startsWith('approve_order:')) {
             const orderId = parseInt(cbData.split(':')[1]);
@@ -159,6 +167,8 @@ module.exports = async (req, res) => {
 
     } catch (error) {
         console.error('Telegram Webhook error:', error);
+        // Báo lỗi cụ thể về Telegram để hiển thị Alert Popup cho Admin biết ngay
+        await answerCallback("Lỗi duyệt đơn: " + error.message, true);
         return res.status(200).json({ status: 'error', message: error.message });
     }
 };
