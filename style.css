@@ -233,13 +233,14 @@ nav {
 .hero-badge-group {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 12px;
     margin-bottom: 24px;
 }
 
 .hero-badge {
     background-color: var(--primary-light);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(28, 125, 92, 0.2);
     color: var(--primary);
     padding: 6px 14px;
     font-size: 0.78rem;
@@ -247,6 +248,25 @@ nav {
     border-radius: 50px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+.hero-rating, .hero-users {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.hero-rating svg {
+    color: #fbbf24;
+    flex-shrink: 0;
+}
+
+.hero-rating-sep {
+    color: var(--border-color);
+    font-size: 0.85rem;
 }
 
 .hero-social-proof {
@@ -1194,6 +1214,18 @@ nav {
     .hero-content {
         align-items: center;
     }
+    .hero-badge-group {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .hero-rating-sep {
+        display: none;
+    }
+    .hero-rating, .hero-users {
+        font-size: 0.95rem;
+        justify-content: center;
+    }
     .hero-cta-box {
         flex-direction: column;
         width: 100%;
@@ -1206,6 +1238,7 @@ nav {
         text-align: center;
         padding: 16px 24px;
         font-size: 1.1rem;
+        white-space: nowrap;
     }
     .hero-book-img {
         width: 330px;
@@ -1241,7 +1274,7 @@ nav {
     }
     .hero p.hero-desc {
         font-size: 1.1rem;
-        color: var(--text-main); /* Tăng tương phản cho người trung niên */
+        color: var(--text-main);
         line-height: 1.6;
         margin-bottom: 24px;
         opacity: 0.95;
@@ -1272,6 +1305,38 @@ nav {
     .calc-btn-group button {
         padding: 16px;
         font-size: 1.1rem;
+    }
+    
+    /* Tránh xô lệch kết quả BMI/TDEE trên mobile */
+    .result-value-box {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .result-card {
+        padding: 24px;
+        min-height: auto;
+    }
+    .result-val {
+        padding: 16px;
+    }
+    .result-val .val {
+        font-size: 2rem;
+    }
+    
+    /* Tránh đè chữ trong FAQ Accordion */
+    .accordion-header {
+        gap: 16px;
+        padding: 16px 20px;
+    }
+    .accordion-header h4 {
+        font-size: 0.95rem;
+        line-height: 1.35;
+    }
+    
+    /* Phân bổ grid quà tặng cột đơn trên mobile */
+    .bonus-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
     
     /* Tăng kích thước các đề mục và text để dễ đọc */
