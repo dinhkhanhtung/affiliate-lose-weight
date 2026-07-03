@@ -143,6 +143,40 @@ nav {
     gap: 16px;
 }
 
+/* Hamburger Menu Button */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.hamburger-menu:hover {
+    background-color: var(--primary-light);
+}
+
+.hamburger-menu svg {
+    transition: transform 0.3s ease;
+}
+
+.hamburger-menu.active svg {
+    transform: rotate(90deg);
+}
+
+.hamburger-menu line {
+    transform-origin: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
 /* Button & Controls */
 .theme-toggle {
     background: transparent;
@@ -1269,8 +1303,38 @@ nav {
         padding-top: 95px;
         padding-bottom: 30px;
     }
+    .hamburger-menu {
+        display: flex;
+    }
+    #header-cta-btn {
+        display: none;
+    }
     .nav-links {
         display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-card-solid);
+        border-bottom: 1px solid var(--border-color);
+        flex-direction: column;
+        padding: 20px 24px;
+        gap: 8px;
+        box-shadow: var(--shadow);
+        z-index: 999;
+        text-align: left;
+    }
+    .nav-links.active {
+        display: flex;
+    }
+    .nav-links li {
+        width: 100%;
+    }
+    .nav-links a {
+        display: block;
+        padding: 10px 0;
+        font-size: 1.05rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     .hero h1 {
         font-size: 1.95rem;
@@ -1576,61 +1640,80 @@ footer {
     }
 }
 
-/* Mobile Sticky Bottom Bar */
+/* Mobile Sticky Bottom Bar (Native App Style) */
 .mobile-bottom-bar {
     display: none;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 72px;
-    background-color: rgba(13, 30, 26, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    height: 64px;
+    background-color: var(--bg-card-solid);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-color);
     z-index: 998;
-    padding: 10px 16px;
+    padding: 0 8px;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.mbb-item {
+.mbb-tab {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    flex: 1;
     height: 100%;
-    border-radius: 12px;
+    color: var(--text-muted);
     text-decoration: none;
-    font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    gap: 4px;
     transition: var(--transition);
 }
 
-.mbb-zalo {
-    flex: 1.2;
-    background-color: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
-    gap: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+.mbb-tab svg {
+    color: var(--text-muted);
+    transition: var(--transition);
 }
 
-.mbb-zalo img {
-    width: 24px;
-    height: 24px;
+.mbb-tab:hover, .mbb-tab:active {
+    color: var(--primary);
+}
+
+.mbb-tab:hover svg, .mbb-tab:active svg {
+    color: var(--primary);
+}
+
+.mbb-zalo-icon img {
+    width: 20px;
+    height: 20px;
     object-fit: contain;
 }
 
-.mbb-cta {
-    flex: 2;
+.mbb-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1.5;
+    height: 44px;
     background-color: var(--accent);
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    font-weight: 700;
+    font-size: 0.88rem;
+    border-radius: 22px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    margin-right: 8px;
+    white-space: nowrap;
+    transition: var(--transition);
 }
 
-.mbb-cta:hover {
+.mbb-cta-btn:hover, .mbb-cta-btn:active {
     background-color: #ea580c;
+    transform: scale(1.02);
 }
 
 /* Hiển thị trên Mobile và Tablet nhỏ */
@@ -1639,14 +1722,14 @@ footer {
         display: flex;
     }
     
-    /* Chừa khoảng trống 72px ở dưới cùng để tránh bị Bottom Bar đè nội dung */
+    /* Chừa khoảng trống 64px ở dưới cùng để tránh bị Bottom Bar đè nội dung */
     body {
-        padding-bottom: 72px;
+        padding-bottom: 64px;
     }
     
     /* Điều chỉnh vị trí nút Back to Top cao hơn và nhỏ hơn để tránh đè lên Bottom Bar & form */
     .back-to-top-btn {
-        bottom: 88px;
+        bottom: 80px;
         right: 12px;
         width: 40px;
         height: 40px;

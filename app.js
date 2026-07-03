@@ -1,10 +1,40 @@
-// Logic điều khiển giao diện, tính BMI/TDEE, accordion và kết nối Supabase
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
+    initMobileMenu();
     initBmiCalculator();
     initAccordion();
     initOrderForm();
 });
+
+// Quản lý Hamburger Menu trên Mobile
+function initMobileMenu() {
+    const hamburgerBtn = document.getElementById("hamburger-btn");
+    const navLinksMenu = document.getElementById("nav-links-menu");
+    if (!hamburgerBtn || !navLinksMenu) return;
+
+    hamburgerBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navLinksMenu.classList.toggle("active");
+        hamburgerBtn.classList.toggle("active");
+    });
+
+    // Tự động đóng menu khi bấm vào link điều hướng
+    const links = navLinksMenu.querySelectorAll("a");
+    links.forEach(link => {
+        link.addEventListener("click", () => {
+            navLinksMenu.classList.remove("active");
+            hamburgerBtn.classList.remove("active");
+        });
+    });
+
+    // Đóng menu khi bấm ra ngoài
+    document.addEventListener("click", (e) => {
+        if (!navLinksMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+            navLinksMenu.classList.remove("active");
+            hamburgerBtn.classList.remove("active");
+        }
+    });
+}
 
 // 1. Quản lý Dark/Light Theme
 function initTheme() {
