@@ -514,6 +514,11 @@ nav {
     transition: var(--transition);
 }
 
+.form-group input::placeholder, .form-group select::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5; /* Làm mờ chữ gợi ý để phân biệt rõ với chữ tự nhập */
+}
+
 .form-group input:focus, .form-group select:focus {
     outline: none;
     border-color: var(--primary);
