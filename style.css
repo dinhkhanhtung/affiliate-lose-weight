@@ -501,10 +501,9 @@ nav {
 }
 
 .calc-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.05fr;
-    gap: 48px;
-    align-items: start;
+    display: block;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .calc-card {
@@ -594,7 +593,79 @@ nav {
     color: var(--primary);
 }
 
-/* Results Display */
+/* Results Display & Modal */
+.calc-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+    padding: 20px;
+}
+
+.calc-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.calc-modal-content {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    width: 100%;
+    max-width: 580px;
+    position: relative;
+    box-shadow: var(--shadow-hover);
+    animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+@keyframes modalFadeIn {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.calc-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    z-index: 10;
+    transition: var(--transition);
+    line-height: 1;
+}
+
+.calc-modal-close:hover {
+    color: var(--text-main);
+}
+
+.calc-modal-content .result-card {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 36px 40px;
+    min-height: auto;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
 .result-card {
     background: var(--bg-card);
     backdrop-filter: blur(16px);

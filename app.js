@@ -117,19 +117,42 @@ function initBmiCalculator() {
         // Hiển thị kết quả lên giao diện
         displayCalculatorResults(currentBmiResult, currentTdeeResult);
     });
+
+    // Thiết lập đóng mở Modal kết quả BMI/TDEE
+    const calcModal = document.getElementById("calc-modal");
+    const calcModalClose = document.getElementById("calc-modal-close-btn");
+    const resultCtaBtn = document.getElementById("result-cta-btn");
+    
+    if (calcModal) {
+        // Đóng khi click nút Close
+        if (calcModalClose) {
+            calcModalClose.addEventListener("click", () => {
+                calcModal.classList.remove("active");
+            });
+        }
+        
+        // Đóng khi click overlay
+        calcModal.addEventListener("click", (e) => {
+            if (e.target === calcModal) {
+                calcModal.classList.remove("active");
+            }
+        });
+        
+        // Đóng khi click nút CTA nhận ebook (để cuộn mượt mà xuống)
+        if (resultCtaBtn) {
+            resultCtaBtn.addEventListener("click", () => {
+                calcModal.classList.remove("active");
+            });
+        }
+    }
 }
 
 function displayCalculatorResults(bmi, tdee) {
-    const placeholder = document.getElementById("result-placeholder");
-    const resultBox = document.getElementById("result-content");
     const bmiVal = document.getElementById("bmi-val");
     const tdeeVal = document.getElementById("tdee-val");
     const pointer = document.getElementById("bmi-pointer");
     const statusText = document.getElementById("bmi-status-text");
     const adviceText = document.getElementById("bmi-advice");
-
-    if (placeholder) placeholder.style.display = "none";
-    if (resultBox) resultBox.style.display = "block";
 
     bmiVal.innerText = bmi;
     tdeeVal.innerText = `${tdee} kcal`;
@@ -172,6 +195,12 @@ function displayCalculatorResults(bmi, tdee) {
     const weightField = document.getElementById("order-weight-hidden");
     if (heightField) heightField.value = document.getElementById("height").value;
     if (weightField) weightField.value = document.getElementById("weight").value;
+
+    // Mở modal kết quả hiển thị
+    const calcModal = document.getElementById("calc-modal");
+    if (calcModal) {
+        calcModal.classList.add("active");
+    }
 }
 
 // 3. Quản lý Accordion (Mục lục Ebook & FAQ)

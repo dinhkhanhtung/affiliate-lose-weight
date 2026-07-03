@@ -235,42 +235,38 @@
                         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;" id="submit-calc-btn">Phân Tích Chỉ Số Cơ Thể</button>
                     </form>
                 </div>
-                
-                <!-- Kết quả hiển thị -->
-                <div class="result-card" id="result-card">
-                    <div id="result-placeholder" class="result-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-                        </svg>
-                        <h3>Kết quả sẽ hiển thị tại đây</h3>
-                        <p style="margin-top: 8px;">Vui lòng điền đầy đủ thông tin bên trái và nhấn Phân Tích.</p>
-                    </div>
-                    
-                    <div id="result-content" class="result-content" style="display: none;">
-                        <h3>Chỉ Số Thể Chất Của Bạn</h3>
-                        
-                        <div class="result-value-box">
-                            <div class="result-val">
-                                <div class="val" id="bmi-val">--</div>
-                                <div class="label">Chỉ số BMI</div>
+            </div>
+
+            <!-- Modal hiển thị kết quả BMI/TDEE -->
+            <div class="calc-modal" id="calc-modal">
+                <div class="calc-modal-content">
+                    <button class="calc-modal-close" id="calc-modal-close-btn" aria-label="Đóng">&times;</button>
+                    <div class="result-card" id="result-card">
+                        <div id="result-content" class="result-content">
+                            <h3>Chỉ Số Thể Chất Của Bạn</h3>
+                            
+                            <div class="result-value-box">
+                                <div class="result-val">
+                                    <div class="val" id="bmi-val">--</div>
+                                    <div class="label">Chỉ số BMI</div>
+                                </div>
+                                <div class="result-val">
+                                    <div class="val" id="tdee-val">--</div>
+                                    <div class="label">TDEE (Calo tiêu thụ)</div>
+                                </div>
                             </div>
-                            <div class="result-val">
-                                <div class="val" id="tdee-val">--</div>
-                                <div class="label">TDEE (Calo tiêu thụ)</div>
+                            
+                            <div class="bmi-bar">
+                                <div class="bmi-pointer" id="bmi-pointer"></div>
                             </div>
-                        </div>
-                        
-                        <div class="bmi-bar">
-                            <div class="bmi-pointer" id="bmi-pointer"></div>
-                        </div>
-                        
-                        <div class="bmi-status-text" id="bmi-status-text">--</div>
-                        <p class="bmi-advice" id="bmi-advice">--</p>
-                        
-                        <div class="bmi-funnel-cta">
-                            <p>👉 Nhận thiết kế thực đơn phù hợp với chỉ số của bạn ngay!</p>
-                            <a href="#order" class="btn btn-primary" id="result-cta-btn">Nhận Lộ Trình & Ebook</a>
+                            
+                            <div class="bmi-status-text" id="bmi-status-text">--</div>
+                            <p class="bmi-advice" id="bmi-advice">--</p>
+                            
+                            <div class="bmi-funnel-cta">
+                                <p>👉 Nhận thiết kế thực đơn phù hợp với chỉ số của bạn ngay!</p>
+                                <a href="#order" class="btn btn-primary" id="result-cta-btn">Nhận Lộ Trình & Ebook</a>
+                            </div>
                         </div>
                     </div>
                 </div>
