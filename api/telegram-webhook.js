@@ -78,7 +78,7 @@ module.exports = async (req, res) => {
         const chatId = message.chat ? message.chat.id : null;
         const messageId = message.message_id;
 
-        const dbConnString = process.env.DATABASE_URL || "postgresql://postgres:T6Cz5p8TcXbw@db.zvhtcaicryjzkuesueoz.supabase.co:5432/postgres";
+        const dbConnString = process.env.DATABASE_URL || "postgresql://postgres.zvhtcaicryjzkuesueoz:T6Cz5p8TcXbw@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
 
         if (cbData.startsWith('approve_order:')) {
             const orderId = parseInt(cbData.split(':')[1]);
