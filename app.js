@@ -398,8 +398,8 @@ function showPaymentModal(name, phone, accessCode, amount) {
                 closeBtn.style.backgroundColor = "#1c7d5c"; // Lục bảo
                 closeBtn.style.borderColor = "#1c7d5c";
                 closeBtn.onclick = () => {
-                    sessionStorage.setItem("reader_phone", phone);
-                    sessionStorage.setItem("reader_code", accessCode);
+                    localStorage.setItem("reader_phone", phone);
+                    localStorage.setItem("reader_code", accessCode);
                     modal.classList.remove("active");
                     window.location.href = "reader.html";
                 };
@@ -416,8 +416,8 @@ function showPaymentModal(name, phone, accessCode, amount) {
     const handleManualConfirmation = async () => {
         if (isApproved) {
             // Nếu đã approved thì chuyển trang
-            sessionStorage.setItem("reader_phone", phone);
-            sessionStorage.setItem("reader_code", accessCode);
+            localStorage.setItem("reader_phone", phone);
+            localStorage.setItem("reader_code", accessCode);
             modal.classList.remove("active");
             window.location.href = "reader.html";
             return;

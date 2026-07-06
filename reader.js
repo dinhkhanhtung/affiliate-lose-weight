@@ -229,6 +229,12 @@ function showReaderSection() {
     document.getElementById("login-section").style.display = "none";
     document.getElementById("reader-section").style.display = "block";
     
+    // Hiện lại Bottom Bar khi vào trang đọc chính
+    const bottomBar = document.querySelector(".mobile-bottom-bar");
+    if (bottomBar) {
+        bottomBar.style.display = "";
+    }
+    
     // Nạp danh sách chương vào dropdown select
     const select = document.getElementById("chapter-select");
     if (select) {
@@ -271,6 +277,15 @@ function hideLoadingScreen() {
         setTimeout(() => {
             loadingSec.style.display = "none";
         }, 400);
+    }
+
+    // Ẩn Bottom Bar khi người dùng đang ở màn hình kích hoạt/đăng nhập
+    const loginSec = document.getElementById("login-section");
+    if (loginSec && loginSec.style.display !== "none") {
+        const bottomBar = document.querySelector(".mobile-bottom-bar");
+        if (bottomBar) {
+            bottomBar.style.display = "none";
+        }
     }
 }
 
@@ -372,7 +387,10 @@ function initLogoutBtn() {
     if (!logoutBtn) return;
 
     logoutBtn.addEventListener("click", () => {
-        sessionStorage.clear();
+        localStorage.removeItem("reader_phone");
+        localStorage.removeItem("reader_code");
+        const bottomBar = document.querySelector(".mobile-bottom-bar");
+        if (bottomBar) bottomBar.style.display = "none";
         location.reload();
     });
 }
