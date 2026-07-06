@@ -2327,3 +2327,112 @@ footer {
     visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
+
+/* Premium E-Reader Dashboard Toolbar */
+.reader-toolbar {
+    max-width: 800px;
+    margin: 0 auto 24px auto;
+    padding: 10px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.rt-left, .rt-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rt-label {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.rt-size-val {
+    font-weight: 700;
+    color: var(--text-main);
+    min-width: 45px;
+    text-align: center;
+}
+
+.rt-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.rt-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background-color: var(--primary-light);
+}
+
+.rt-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.rt-toggle-btn.active {
+    border-color: var(--primary-light);
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.rt-toggle-btn svg {
+    flex-shrink: 0;
+}
+
+/* Scroll Progress Bar at the top */
+.reading-progress-container {
+    position: fixed;
+    top: 72px; /* Dưới header */
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    z-index: 99;
+}
+
+.reading-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
+    transition: width 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 768px) {
+    .reader-toolbar {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .rt-left, .rt-right {
+        justify-content: space-between;
+    }
+    
+    .reading-progress-container {
+        top: 60px; /* Thích ứng chiều cao header mobile */
+    }
+}

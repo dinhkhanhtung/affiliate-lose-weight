@@ -136,6 +136,11 @@
             </div>
         </header>
 
+        <!-- Reading Progress Bar -->
+        <div class="reading-progress-container">
+            <div id="reading-progress-bar" class="reading-progress-bar"></div>
+        </div>
+
         <!-- Layout Đọc sách trơn và AI trôi nổi -->
         <div class="reader-layout">
             <!-- Menu Chương & Nội Dung Sách -->
@@ -146,12 +151,23 @@
                         <h1 id="chapter-title" class="no-select">Đang tải chương học...</h1>
                     </div>
                     
-                    <!-- Tiện ích đọc sách -->
-                    <div class="reader-utilities" style="display: flex; justify-content: flex-end; margin-bottom: 24px; border-bottom: 1px dashed var(--border-color); padding-bottom: 12px;">
-                        <label class="auto-read-label" style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; user-select: none;">
-                            <input type="checkbox" id="auto-read-checkbox" checked style="accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer;">
-                            Đọc nối tiếp (Tự động cuộn qua chương)
-                        </label>
+                    <!-- Bảng điều khiển đọc sách cao cấp (E-Reader Dashboard) -->
+                    <div class="reader-toolbar">
+                        <div class="rt-left">
+                            <span class="rt-label">Cỡ chữ:</span>
+                            <button class="rt-btn" id="font-dec-btn" title="Giảm cỡ chữ">A-</button>
+                            <span id="font-size-display" class="rt-size-val">100%</span>
+                            <button class="rt-btn" id="font-inc-btn" title="Tăng cỡ chữ">A+</button>
+                        </div>
+                        <div class="rt-right">
+                            <button class="rt-toggle-btn" id="auto-read-toggle-btn" title="Tự động qua chương khi cuộn hết">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="7 13 12 18 17 13"></polyline>
+                                    <polyline points="7 6 12 11 17 6"></polyline>
+                                </svg>
+                                <span>Đọc nối tiếp: <strong id="auto-read-status">BẬT</strong></span>
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Phần hiển thị nội dung sách (Được bảo vệ chống copy) -->

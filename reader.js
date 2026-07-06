@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initChatForm();
     initFloatingChat();
     initAutoReadScroll();
+    initFontControls();
+    initAutoReadToggle();
     preventContentCopy();
 });
 
@@ -292,6 +294,9 @@ function renderChapter(index) {
     const htmlContent = parseMarkdownToHtml(chapter.content);
     document.getElementById("chapter-content").innerHTML = htmlContent;
 
+    // Áp dụng cỡ chữ của độc giả
+    applyFontScale();
+
     // Cuộn trang đọc về đầu (tương thích cả PC và di động)
     resetReaderScroll();
 }
@@ -556,19 +561,24 @@ function initAutoReadScroll() {
     const readerMain = document.querySelector(".reader-main");
     
     // Lắng nghe scroll trên window (cho di động)
-    window.addEventListener("scroll", handleScrollAutoNext);
+    window.addEventListener("scroll", () => {
+        handleScrollAutoNext();
+        updateReadingProgress();
+    });
     
     // Lắng nghe scroll trên .reader-main (cho máy tính)
     if (readerMain) {
-        readerMain.addEventListener("scroll", handleScrollAutoNext);
+        readerMain.addEventListener("scroll", () => {
+            handleScrollAutoNext();
+            updateReadingProgress();
+        });
     }
 }
 
 let isSwitchingChapter = false;
 
 function handleScrollAutoNext() {
-    const autoReadCheck = document.getElementById("auto-read-checkbox");
-    if (!autoReadCheck || !autoReadCheck.checked || isSwitchingChapter) return;
+    if (!isAutoReadEnabled || isSwitchingChapter) return;
     
     // Nếu là chương cuối cùng thì thôi
     if (currentChapterIndex >= bookChapters.length - 1) return;
@@ -601,6 +611,29 @@ function handleScrollAutoNext() {
     }
 }
 
+// Cập nhật thanh tiến trình đọc sách ở đỉnh trang
+function updateReadingProgress() {
+    const progressBar = document.getElementById("reading-progress-bar");
+    if (!progressBar) return;
+    
+    const readerMain = document.querySelector(".reader-main");
+    let percentage = 0;
+    
+    if (window.innerWidth > 992 && readerMain) {
+        const totalHeight = readerMain.scrollHeight - readerMain.clientHeight;
+        if (totalHeight > 0) {
+            percentage = (readerMain.scrollTop / totalHeight) * 100;
+        }
+    } else {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (totalHeight > 0) {
+            percentage = (window.scrollY / totalHeight) * 100;
+        }
+    }
+    
+    progressBar.style.width = `${percentage}%`;
+}
+
 // Hiển thị thông báo Toast nhỏ trên đỉnh màn hình
 function showToastNotification(message) {
     let toast = document.getElementById("reader-toast");
@@ -625,6 +658,9 @@ function resetReaderScroll() {
     if (readerMain) {
         readerMain.scrollTop = 0;
     }
+    // Cập nhật lại progress bar về 0%
+    const progressBar = document.getElementById("reading-progress-bar");
+    if (progressBar) progressBar.style.width = "0%";
 }
 
 // Vô hiệu hóa nút Mua Ebook khi đã sở hữu sách
@@ -635,4 +671,77 @@ function disableBuyButton() {
         buyBtn.classList.add("disabled");
         buyBtn.href = "javascript:void(0)";
     }
+}
+
+// --- CÁC HÀM NÂNG CAO TRẢI NGHIỆM ĐỌC SÁCH ---
+
+// 1. Quản lý cỡ chữ (Font size controls) cho độc giả trung niên (45+)
+let currentFontScale = parseInt(localStorage.getItem("reader_font_scale") || "100");
+
+function applyFontScale() {
+    const content = document.getElementById("chapter-content");
+    if (content) {
+        // Cỡ chữ cơ bản của thiết kế là 1.15rem
+        content.style.fontSize = `${(1.15 * currentFontScale) / 100}rem`;
+    }
+    const display = document.getElementById("font-size-display");
+    if (display) {
+        display.innerText = `${currentFontScale}%`;
+    }
+}
+
+function initFontControls() {
+    const decBtn = document.getElementById("font-dec-btn");
+    const incBtn = document.getElementById("font-inc-btn");
+    if (!decBtn || !incBtn) return;
+    
+    applyFontScale();
+    
+    decBtn.addEventListener("click", () => {
+        if (currentFontScale > 80) {
+            currentFontScale -= 10;
+            localStorage.setItem("reader_font_scale", currentFontScale);
+            applyFontScale();
+        }
+    });
+    
+    incBtn.addEventListener("click", () => {
+        if (currentFontScale < 180) { // Tối đa 180% giúp người trung niên đọc cực kỳ rõ
+            currentFontScale += 10;
+            localStorage.setItem("reader_font_scale", currentFontScale);
+            applyFontScale();
+        }
+    });
+}
+
+// 2. Quản lý trạng thái Bật/Tắt chế độ đọc nối tiếp
+let isAutoReadEnabled = localStorage.getItem("reader_auto_read") !== "false"; // Mặc định là Bật (true)
+
+function updateAutoReadUI() {
+    const toggleBtn = document.getElementById("auto-read-toggle-btn");
+    const statusText = document.getElementById("auto-read-status");
+    if (!toggleBtn) return;
+    
+    if (isAutoReadEnabled) {
+        toggleBtn.classList.add("active");
+        if (statusText) statusText.innerText = "BẬT";
+    } else {
+        toggleBtn.classList.remove("active");
+        if (statusText) statusText.innerText = "TẮT";
+    }
+}
+
+function initAutoReadToggle() {
+    const toggleBtn = document.getElementById("auto-read-toggle-btn");
+    if (!toggleBtn) return;
+    
+    updateAutoReadUI();
+    
+    toggleBtn.addEventListener("click", () => {
+        isAutoReadEnabled = !isAutoReadEnabled;
+        localStorage.setItem("reader_auto_read", isAutoReadEnabled);
+        updateAutoReadUI();
+        
+        showToastNotification(isAutoReadEnabled ? "Đã BẬT tự động chuyển chương" : "Đã TẮT tự động chuyển chương");
+    });
 }
