@@ -86,6 +86,9 @@ function checkExistingSession() {
         userPhone = savedPhone;
         userAccessCode = savedCode;
         loadBookData();
+    } else {
+        // Tắt màn hình loading để hiện form đăng nhập
+        hideLoadingScreen();
     }
 }
 
@@ -103,6 +106,9 @@ function initLoginForm() {
         const submitBtn = document.getElementById("login-submit-btn");
         submitBtn.disabled = true;
         submitBtn.innerText = "Đang kiểm tra kích hoạt...";
+
+        // Hiện màn hình loading
+        showLoadingScreen();
 
         try {
             if (!supabaseClient) {
@@ -134,6 +140,7 @@ function initLoginForm() {
 
         } catch (err) {
             console.error("Đăng nhập thất bại:", err);
+            hideLoadingScreen();
             alert("Đăng nhập lỗi: " + err.message);
         } finally {
             submitBtn.disabled = false;
@@ -179,7 +186,10 @@ function updateAiCreditDisplay() {
 // 5. Tải nội dung sách sau khi đã xác thực Session
 async function loadBookData() {
     try {
-        if (!supabaseClient) return;
+        if (!supabaseClient) {
+            hideLoadingScreen();
+            return;
+        }
 
         // Tải nội dung sách từ RPC
         const { data, error } = await supabaseClient.rpc("get_book_content", {
@@ -190,6 +200,7 @@ async function loadBookData() {
         if (error) {
             // Nếu lỗi phiên, xóa session bắt đăng nhập lại
             sessionStorage.clear();
+            hideLoadingScreen();
             return;
         }
 
@@ -200,6 +211,7 @@ async function loadBookData() {
     } catch (err) {
         console.error("Lỗi tải sách:", err);
         sessionStorage.clear();
+        hideLoadingScreen();
     }
 }
 
@@ -223,6 +235,30 @@ function showReaderSection() {
     const lastReadIdx = parseInt(localStorage.getItem(`last_read_${userPhone}`) || "0");
     currentChapterIndex = lastReadIdx < bookChapters.length ? lastReadIdx : 0;
     renderChapter(currentChapterIndex);
+
+    // Tắt loading sau khi giao diện đã hiển thị xong
+    hideLoadingScreen();
+}
+
+// Các hàm Helper đóng mở màn hình Loading đồng bộ
+function showLoadingScreen() {
+    const loadingSec = document.getElementById("loading-section");
+    if (loadingSec) {
+        loadingSec.style.display = "flex";
+        loadingSec.style.opacity = "1";
+        loadingSec.style.visibility = "visible";
+    }
+}
+
+function hideLoadingScreen() {
+    const loadingSec = document.getElementById("loading-section");
+    if (loadingSec) {
+        loadingSec.style.opacity = "0";
+        loadingSec.style.visibility = "hidden";
+        setTimeout(() => {
+            loadingSec.style.display = "none";
+        }, 400);
+    }
 }
 
 // 6. Hiển thị nội dung chương sách (Markdown to HTML đơn giản)
