@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initLogoutBtn();
     initChapterNavigation();
     initChatForm();
+    initFloatingChat();
     preventContentCopy();
 });
 
@@ -180,6 +181,10 @@ function updateAiCreditDisplay() {
     const display = document.getElementById("ai-credit-display");
     if (display) {
         display.innerText = `Còn ${aiQuestionsLeft} lượt`;
+    }
+    const triggerBadge = document.getElementById("ai-trigger-badge");
+    if (triggerBadge) {
+        triggerBadge.innerText = `Còn ${aiQuestionsLeft} lượt`;
     }
 }
 
@@ -505,5 +510,37 @@ function removeTypingIndicator(id) {
     const indicator = document.getElementById(id);
     if (indicator) {
         indicator.remove();
+    }
+}
+
+// Khởi tạo và quản lý trạng thái đóng mở chat AI trôi nổi
+function initFloatingChat() {
+    const trigger = document.getElementById("ai-chat-trigger");
+    const panel = document.getElementById("ai-chat-panel");
+    const closeBtn = document.getElementById("ai-chat-close-btn");
+    
+    if (!trigger || !panel) return;
+    
+    // Toggle mở/đóng chat khi nhấn nút nổi
+    trigger.addEventListener("click", () => {
+        panel.classList.toggle("active");
+        if (panel.classList.contains("active")) {
+            // Cuộn tin nhắn xuống cuối
+            const chatMessages = document.getElementById("chat-messages");
+            if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            trigger.classList.add("chat-open");
+        } else {
+            trigger.classList.remove("chat-open");
+        }
+    });
+    
+    // Đóng chat khi nhấn nút x
+    if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+            panel.classList.remove("active");
+            trigger.classList.remove("chat-open");
+        });
     }
 }

@@ -130,15 +130,14 @@
             </div>
         </header>
 
-        <!-- Layout Đọc sách + Sidebar Chat AI -->
+        <!-- Layout Đọc sách trơn và AI trôi nổi -->
         <div class="reader-layout">
-            
             <!-- Menu Chương & Nội Dung Sách -->
             <div class="reader-main">
                 <div class="reader-container">
                     <div class="reader-header">
                         <h1 id="chapter-title" class="no-select">Đang tải chương học...</h1>
-                        <span id="chapter-number" style="font-size: 0.9rem; background-color: var(--border-color); padding: 4px 10px; border-radius: 50px; font-weight: 600;">--</span>
+                        <span id="chapter-number" style="font-size: 0.9rem; background-color: var(--border-color); padding: 4px 10px; border-radius: 50px; font-weight: 600; white-space: nowrap;">--</span>
                     </div>
                     
                     <!-- Phần hiển thị nội dung sách (Được bảo vệ chống copy) -->
@@ -148,57 +147,64 @@
                     
                     <!-- Điều hướng chương -->
                     <div class="reader-nav">
-                        <button class="btn" id="prev-chapter-btn">← Chương trước</button>
+                        <button class="btn" id="prev-chapter-btn" style="white-space: nowrap;">← Chương trước</button>
                         
                         <!-- Dropdown chọn chương nhanh -->
-                        <select id="chapter-select" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: var(--font-sans); background: var(--bg-card); color: var(--text-main);">
+                        <select id="chapter-select" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: var(--font-sans); background: var(--bg-card); color: var(--text-main); max-width: 200px;">
                             <option value="">Chọn chương...</option>
                         </select>
                         
-                        <button class="btn btn-primary" id="next-chapter-btn">Chương tiếp theo →</button>
+                        <button class="btn btn-primary" id="next-chapter-btn" style="white-space: nowrap;">Chương tiếp theo →</button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Trợ lý Dinh Dưỡng AI Sidebar -->
-            <div class="ai-sidebar">
-                <div class="ai-header">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <div>
-                        <div class="ai-header-title">Cố Vấn Dinh Dưỡng AI</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Trợ lý giảm cân đồng hành cùng bạn</div>
-                    </div>
-                    <div class="ai-header-badge" id="ai-credit-display">Còn 20 lượt</div>
-                </div>
-                
-                <!-- Khu vực tin nhắn -->
-                <div class="chat-messages" id="chat-messages">
-                    <div class="chat-bubble chat-bubble-ai">
-                        Xin chào! Tôi là Trợ lý Dinh dưỡng AI của bạn. Tôi đã được học toàn bộ cuốn sách <strong>Giảm Cân Không Hành Xác</strong> này.<br><br>
-                        Bạn có thể hỏi tôi bất kỳ thắc mắc nào về kiến thức giảm cân, nhờ tôi lên thực đơn ăn no phù hợp với cơ thể bạn, hoặc tính lượng calo cho món ăn bất kỳ. Hãy bắt đầu nhé!
-                    </div>
-                </div>
-                
-                <!-- Ô nhập tin nhắn -->
-                <div class="chat-input-area">
-                    <form id="chat-form">
-                        <div class="chat-input-container">
-                            <input type="text" id="chat-input" placeholder="Đặt câu hỏi cho Cố vấn AI..." required autocomplete="off">
-                            <button type="submit" class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                </svg>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
         </div>
-    </div>
+
+        <!-- Nút kích hoạt Trợ lý AI trôi nổi -->
+        <button id="ai-chat-trigger" class="ai-chat-trigger-btn" aria-label="Hỏi Cố vấn AI">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="ai-trigger-badge" id="ai-trigger-badge">Còn 20 lượt</span>
+        </button>
+
+        <!-- Trợ lý Dinh Dưỡng AI Panel Trôi Nổi -->
+        <div class="ai-sidebar" id="ai-chat-panel">
+            <div class="ai-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <div style="flex: 1; min-width: 0;">
+                    <div class="ai-header-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Cố Vấn Dinh Dưỡng AI</div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Trợ lý giảm cân đồng hành cùng bạn</div>
+                </div>
+                <div class="ai-header-badge" id="ai-credit-display" style="white-space: nowrap; flex-shrink: 0; margin-right: 8px;">Còn 20 lượt</div>
+                <button class="ai-chat-close-btn" id="ai-chat-close-btn" aria-label="Đóng chat">&times;</button>
+            </div>
+            
+            <!-- Khu vực tin nhắn -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-bubble chat-bubble-ai">
+                    Xin chào! Tôi là Trợ lý Dinh dưỡng AI của bạn. Tôi đã được học toàn bộ cuốn sách <strong>Giảm Cân Không Hành Xác</strong> này.<br><br>
+                    Bạn có thể hỏi tôi bất kỳ thắc mắc nào về kiến thức giảm cân, nhờ tôi lên thực đơn ăn no phù hợp với cơ thể bạn, hoặc tính lượng calo cho món ăn bất kỳ. Hãy bắt đầu nhé!
+                </div>
+            </div>
+            
+            <!-- Ô nhập tin nhắn -->
+            <div class="chat-input-area">
+                <form id="chat-form">
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Đặt câu hỏi cho Cố vấn AI..." required autocomplete="off">
+                        <button type="submit" class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
     <!-- Mobile Sticky Bottom Bar (Native App Style) -->
     <div class="mobile-bottom-bar">
