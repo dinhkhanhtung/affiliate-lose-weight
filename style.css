@@ -198,6 +198,32 @@ nav {
     transform: scale(1.05);
 }
 
+.logout-icon-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    padding: 0;
+}
+
+.logout-icon-btn:hover {
+    border-color: var(--error);
+    color: var(--error);
+    background: rgba(239, 68, 68, 0.05);
+    transform: scale(1.05);
+}
+
+.logout-icon-btn svg {
+    display: block;
+}
+
 .btn {
     display: inline-flex;
     justify-content: center;
@@ -2246,4 +2272,15 @@ footer {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    #user-info-display {
+        display: none !important;
+    }
+    
+    /* Đảm bảo logo reader không bị xô lệch */
+    #reader-logo {
+        font-size: 1.25rem;
+    }
 }
