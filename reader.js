@@ -301,6 +301,27 @@ function renderChapter(index) {
     document.getElementById("chapter-title").innerText = chapter.title;
     document.getElementById("chapter-number").innerText = `Chương ${chapter.chapter_order}`;
     
+    // Xử lý hiển thị ảnh minh họa chương nếu có
+    const imageContainer = document.getElementById("chapter-image-container");
+    const chapterImage = document.getElementById("chapter-image");
+    
+    if (imageContainer && chapterImage) {
+        if (chapter.image_url) {
+            imageContainer.style.display = "block";
+            imageContainer.classList.remove("image-loaded");
+            chapterImage.classList.remove("loaded");
+            
+            chapterImage.src = chapter.image_url;
+            chapterImage.onload = () => {
+                imageContainer.classList.add("image-loaded");
+                chapterImage.classList.add("loaded");
+            };
+        } else {
+            imageContainer.style.display = "none";
+            chapterImage.src = "";
+        }
+    }
+    
     // Cập nhật dropdown
     const select = document.getElementById("chapter-select");
     if (select) select.value = index;
