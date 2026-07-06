@@ -1893,15 +1893,17 @@ footer {
     margin-bottom: 32px;
     padding-bottom: 16px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     border-bottom: 1px solid var(--border-color);
 }
 
 .reader-header h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-family: var(--font-title);
     color: var(--text-main);
+    margin: 0;
+    line-height: 1.35;
 }
 
 .reader-content {
@@ -2282,5 +2284,10 @@ footer {
     /* Đảm bảo logo reader không bị xô lệch */
     #reader-logo {
         font-size: 1.25rem;
+    }
+    
+    /* Cải thiện kích thước tiêu đề chương trên di động */
+    .reader-header h1 {
+        font-size: 1.6rem;
     }
 }
