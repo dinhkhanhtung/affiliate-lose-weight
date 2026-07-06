@@ -146,6 +146,14 @@
                         <h1 id="chapter-title" class="no-select">Đang tải chương học...</h1>
                     </div>
                     
+                    <!-- Tiện ích đọc sách -->
+                    <div class="reader-utilities" style="display: flex; justify-content: flex-end; margin-bottom: 24px; border-bottom: 1px dashed var(--border-color); padding-bottom: 12px;">
+                        <label class="auto-read-label" style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="auto-read-checkbox" checked style="accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer;">
+                            Đọc nối tiếp (Tự động cuộn qua chương)
+                        </label>
+                    </div>
+                    
                     <!-- Phần hiển thị nội dung sách (Được bảo vệ chống copy) -->
                     <div class="reader-content no-select" id="chapter-content">
                         <p>Nội dung đang được tải từ cơ sở dữ liệu bảo mật...</p>

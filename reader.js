@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initChapterNavigation();
     initChatForm();
     initFloatingChat();
+    initAutoReadScroll();
     preventContentCopy();
 });
 
@@ -286,8 +287,8 @@ function renderChapter(index) {
     const htmlContent = parseMarkdownToHtml(chapter.content);
     document.getElementById("chapter-content").innerHTML = htmlContent;
 
-    // Cuộn trang đọc về đầu
-    document.querySelector(".reader-main").scrollTop = 0;
+    // Cuộn trang đọc về đầu (tương thích cả PC và di động)
+    resetReaderScroll();
 }
 
 // Markdown parser đơn giản bằng regex
@@ -542,5 +543,81 @@ function initFloatingChat() {
             panel.classList.remove("active");
             trigger.classList.remove("chat-open");
         });
+    }
+}
+
+// Khởi tạo tính năng Tự động cuộn qua chương mới
+function initAutoReadScroll() {
+    const readerMain = document.querySelector(".reader-main");
+    
+    // Lắng nghe scroll trên window (cho di động)
+    window.addEventListener("scroll", handleScrollAutoNext);
+    
+    // Lắng nghe scroll trên .reader-main (cho máy tính)
+    if (readerMain) {
+        readerMain.addEventListener("scroll", handleScrollAutoNext);
+    }
+}
+
+let isSwitchingChapter = false;
+
+function handleScrollAutoNext() {
+    const autoReadCheck = document.getElementById("auto-read-checkbox");
+    if (!autoReadCheck || !autoReadCheck.checked || isSwitchingChapter) return;
+    
+    // Nếu là chương cuối cùng thì thôi
+    if (currentChapterIndex >= bookChapters.length - 1) return;
+    
+    const readerMain = document.querySelector(".reader-main");
+    let isNearBottom = false;
+    
+    if (window.innerWidth > 992 && readerMain) {
+        // Desktop container scroll
+        isNearBottom = (readerMain.scrollHeight - readerMain.scrollTop - readerMain.clientHeight) < 40;
+    } else {
+        // Mobile/Tablet viewport scroll
+        isNearBottom = (document.documentElement.scrollHeight - window.scrollY - window.innerHeight) < 80;
+    }
+    
+    if (isNearBottom) {
+        isSwitchingChapter = true;
+        currentChapterIndex++;
+        
+        // Render chương mới
+        renderChapter(currentChapterIndex);
+        
+        // Hiển thị toast thông báo góc trên
+        showToastNotification(`Đang đọc tiếp: Chương ${bookChapters[currentChapterIndex].chapter_order}`);
+        
+        // Chờ 1.5s để tránh trigger liên tục khi scroll quá nhanh
+        setTimeout(() => {
+            isSwitchingChapter = false;
+        }, 1500);
+    }
+}
+
+// Hiển thị thông báo Toast nhỏ trên đỉnh màn hình
+function showToastNotification(message) {
+    let toast = document.getElementById("reader-toast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "reader-toast";
+        toast.className = "reader-toast-notification";
+        document.body.appendChild(toast);
+    }
+    toast.innerText = message;
+    toast.classList.add("show");
+    
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+// Reset vị trí cuộn trang về đầu (PC & Di động)
+function resetReaderScroll() {
+    window.scrollTo({ top: 0 });
+    const readerMain = document.querySelector(".reader-main");
+    if (readerMain) {
+        readerMain.scrollTop = 0;
     }
 }
