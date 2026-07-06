@@ -1202,11 +1202,13 @@ nav {
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     z-index: 1000;
     opacity: 0;
     pointer-events: none;
     transition: var(--transition);
+    overflow-y: auto;
+    padding: 40px 16px;
 }
 
 .payment-modal.active {
@@ -1218,16 +1220,47 @@ nav {
     background-color: var(--bg-card-solid);
     border-radius: var(--radius-card);
     max-width: 480px;
-    width: 90%;
+    width: 100%;
     padding: 36px;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-hover);
     transform: scale(0.9);
     transition: var(--transition);
+    margin: auto;
 }
 
 .payment-modal.active .payment-card {
     transform: scale(1);
+}
+
+@media (max-width: 480px) {
+    .payment-modal {
+        padding: 20px 10px;
+    }
+    .payment-card {
+        padding: 24px 20px;
+    }
+    .payment-header {
+        margin-bottom: 16px;
+    }
+    .payment-qr-container {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+    .payment-qr-placeholder {
+        width: 160px;
+        height: 160px;
+    }
+    .payment-qr-container img {
+        width: 160px !important;
+        height: 160px !important;
+    }
+    .payment-details {
+        gap: 8px;
+    }
+    .payment-details p, .payment-details span, .payment-details div {
+        font-size: 0.95rem;
+    }
 }
 
 .payment-header {
