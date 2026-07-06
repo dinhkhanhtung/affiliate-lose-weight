@@ -293,6 +293,9 @@ function hideLoadingScreen() {
 function renderChapter(index) {
     if (bookChapters.length === 0 || index >= bookChapters.length) return;
     
+    // Khóa sự kiện tự động cuộn qua chương trong lúc đang render
+    isSwitchingChapter = true;
+    
     currentChapterIndex = index;
     localStorage.setItem(`last_read_${userPhone}`, index);
     
@@ -335,6 +338,11 @@ function renderChapter(index) {
 
     // Cuộn trang đọc về đầu (tương thích cả PC và di động)
     resetReaderScroll();
+
+    // Mở khóa tự động chuyển chương sau khi scroll và render đã ổn định hoàn toàn
+    setTimeout(() => {
+        isSwitchingChapter = false;
+    }, 800);
 }
 
 // Markdown parser đơn giản bằng regex
