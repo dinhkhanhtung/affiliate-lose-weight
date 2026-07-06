@@ -374,13 +374,12 @@ function initChatForm() {
                 userContext += `Độc giả có chỉ số cơ thể: BMI = ${userBmi}, TDEE = ${userTdee} kcal. Hãy đưa ra lời khuyên cụ thể dựa trên chỉ số này khi họ hỏi về thực đơn hay calo.`;
             }
 
-            const systemPrompt = (
-                "Bạn là 'Cố Vấn Dinh Dưỡng AI' - một chuyên gia dinh dưỡng và giảm cân thân thiện, nhiệt tình của học viện FitLife. "
-                "Kiến thức của bạn được đào tạo dựa trên cuốn sách 'Giảm Cân Không Hành Xác'. "
-                "Hãy trả lời câu hỏi của độc giả một cách khoa học, thực tế theo phong cách Việt Nam. Khuyến khích ăn no bằng các món ăn Việt giàu xơ/đạm nạc, thâm hụt calo lành mạnh, không nhịn đói.\n\n"
-                `Bối cảnh độc giả: ${userContext}\n\n`
-                `Bối cảnh chương sách hiện tại: ${chapterTextContext}`
-            );
+            const systemPrompt = 
+                "Bạn là 'Cố Vấn Dinh Dưỡng AI' - một chuyên gia dinh dưỡng và giảm cân thân thiện, nhiệt tình của học viện FitLife. " +
+                "Kiến thức của bạn được đào tạo dựa trên cuốn sách 'Giảm Cân Không Hành Xác'. " +
+                "Hãy trả lời câu hỏi của độc giả một cách khoa học, thực tế theo phong cách Việt Nam. Khuyến khích ăn no bằng các món ăn Việt giàu xơ/đạm nạc, thâm hụt calo lành mạnh, không nhịn đói.\n\n" +
+                `Bối cảnh độc giả: ${userContext}\n\n` +
+                `Bối cảnh chương sách hiện tại: ${chapterTextContext}`;
 
             // Xây dựng hội thoại gửi lên OpenAI
             chatHistory.push({ role: "user", content: query });
