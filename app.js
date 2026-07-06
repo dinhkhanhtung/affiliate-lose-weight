@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initBmiCalculator();
     initAccordion();
     initOrderForm();
+    checkPurchaseState();
 });
 
 // Quản lý Hamburger Menu trên Mobile
@@ -465,3 +466,31 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// Vô hiệu hóa nút mua nếu người dùng đã mua hoặc đăng nhập kích hoạt sách trước đó
+function checkPurchaseState() {
+    const savedPhone = localStorage.getItem("reader_phone");
+    const savedCode = localStorage.getItem("reader_code");
+    
+    if (savedPhone && savedCode) {
+        // Vô hiệu hóa nút Mua trong Bottom Bar
+        const mbbCtaBtn = document.querySelector(".mbb-cta-btn");
+        if (mbbCtaBtn) {
+            mbbCtaBtn.innerText = "ĐÃ SỞ HỮU";
+            mbbCtaBtn.classList.add("disabled");
+            mbbCtaBtn.href = "javascript:void(0)";
+        }
+        
+        // Vô hiệu hóa tất cả các nút mua khác trên Landing Page (Hero, Pricing, etc.)
+        const buyButtons = document.querySelectorAll('a[href="#order"]');
+        buyButtons.forEach(btn => {
+            if (!btn.classList.contains("mbb-cta-btn")) {
+                btn.innerText = "ĐÃ KÍCH HOẠT SÁCH";
+                btn.classList.add("disabled");
+                btn.style.pointerEvents = "none";
+                btn.style.opacity = "0.6";
+                btn.href = "javascript:void(0)";
+            }
+        });
+    }
+}

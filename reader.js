@@ -81,8 +81,8 @@ function preventContentCopy() {
 
 // 3. Kiểm tra Session cũ đã đăng nhập
 function checkExistingSession() {
-    const savedPhone = sessionStorage.getItem("reader_phone");
-    const savedCode = sessionStorage.getItem("reader_code");
+    const savedPhone = localStorage.getItem("reader_phone");
+    const savedCode = localStorage.getItem("reader_code");
     
     if (savedPhone && savedCode) {
         userPhone = savedPhone;
@@ -128,8 +128,8 @@ function initLoginForm() {
             // Nếu thành công, lưu session
             userPhone = phone;
             userAccessCode = code;
-            sessionStorage.setItem("reader_phone", phone);
-            sessionStorage.setItem("reader_code", code);
+            localStorage.setItem("reader_phone", phone);
+            localStorage.setItem("reader_code", code);
             
             // Xử lý dữ liệu sách
             bookChapters = data || [];
@@ -205,7 +205,8 @@ async function loadBookData() {
 
         if (error) {
             // Nếu lỗi phiên, xóa session bắt đăng nhập lại
-            sessionStorage.clear();
+            localStorage.removeItem("reader_phone");
+            localStorage.removeItem("reader_code");
             hideLoadingScreen();
             return;
         }
@@ -216,7 +217,8 @@ async function loadBookData() {
 
     } catch (err) {
         console.error("Lỗi tải sách:", err);
-        sessionStorage.clear();
+        localStorage.removeItem("reader_phone");
+        localStorage.removeItem("reader_code");
         hideLoadingScreen();
     }
 }
@@ -241,6 +243,9 @@ function showReaderSection() {
     const lastReadIdx = parseInt(localStorage.getItem(`last_read_${userPhone}`) || "0");
     currentChapterIndex = lastReadIdx < bookChapters.length ? lastReadIdx : 0;
     renderChapter(currentChapterIndex);
+
+    // Vô hiệu hóa nút Mua Ebook khi đã đăng nhập đọc sách
+    disableBuyButton();
 
     // Tắt loading sau khi giao diện đã hiển thị xong
     hideLoadingScreen();
@@ -619,5 +624,15 @@ function resetReaderScroll() {
     const readerMain = document.querySelector(".reader-main");
     if (readerMain) {
         readerMain.scrollTop = 0;
+    }
+}
+
+// Vô hiệu hóa nút Mua Ebook khi đã sở hữu sách
+function disableBuyButton() {
+    const buyBtn = document.querySelector(".mbb-cta-btn");
+    if (buyBtn) {
+        buyBtn.innerText = "ĐÃ SỞ HỮU";
+        buyBtn.classList.add("disabled");
+        buyBtn.href = "javascript:void(0)";
     }
 }

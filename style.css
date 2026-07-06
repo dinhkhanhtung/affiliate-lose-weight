@@ -1843,7 +1843,16 @@ footer {
 
 .mbb-cta-btn:hover, .mbb-cta-btn:active {
     background-color: #ea580c;
-    transform: scale(1.02);
+}
+
+.mbb-cta-btn.disabled, .btn.disabled {
+    background: var(--border-color) !important;
+    background-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+    pointer-events: none !important;
+    cursor: default !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 /* Hiển thị trên Mobile và Tablet nhỏ */
